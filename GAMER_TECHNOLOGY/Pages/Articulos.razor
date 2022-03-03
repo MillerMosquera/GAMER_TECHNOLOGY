@@ -1,0 +1,54 @@
+﻿@page "/Articulos"
+@using Data.Model
+@using Data.Service
+
+@inject IArticuloService ArticuloService
+@inject NavigationManager NavigationManager
+
+
+<div>
+    <h1>Articulos</h1>
+    <p>Esta es la pagina de Articulos</p>
+</div>
+@if (articulos == null) {
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div>
+        @foreach (var listArt in articulos)
+        {
+            <div class="row mb-md-5 mb-4 mx-md-n2 mx-n1 no-gutters">
+                <div class="col-lg-3 col-6 px-md-2 px-1">
+                   <div class="product-block">
+                      <img src="@listArt.Imagen"/>
+                </div>
+                <div class="caption">
+                    <a>@listArt.Nombre</a>
+                    <p>@listArt.Descripcion</p>
+                    <button>Agregar</button>
+                </div>
+              
+            </div>
+            </div>
+            
+        }
+    </div>
+}
+@code {
+    private Articulo[] Art;
+
+    private IEnumerable<Articulo> articulos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            articulos = await ArticuloService.GetAll();
+        }
+        catch(Exception)
+        {
+            throw;
+        }
+    }
+}
