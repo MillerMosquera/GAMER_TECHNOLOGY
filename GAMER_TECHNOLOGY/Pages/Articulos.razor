@@ -9,6 +9,33 @@
 <div>
     <h1>Articulos</h1>
     <p>Esta es la pagina de Articulos</p>
+    <nav id="main-menu" class="navbar-expand-md d-none d-lg-block vertical_menu navbar-fixed">
+        <div class="collapse navbar-collapse" id="navbarsContainer">
+            <ul class="navbar-nav m-auto">
+                <li class="nav-item">
+                    <a href="#" title="COMBOS" class="level-1 trsn nav-link">COMBOS</a>
+                </li>
+                  <li class="nav-item">
+                    <a href="#" title="PC GAMER" class="level-1 trsn nav-link">PC GAMER</a>
+                </li>
+                  <li class="nav-item">
+                    <a href="#" title="TARJETA GRAFICA" class="level-1 trsn nav-link">TARJETAS GRAFICAS</a>
+                </li>
+                  <li class="nav-item">
+                    <a href="#" title="PANTALLAS" class="level-1 trsn nav-link">PANTALLAS</a>
+                </li>
+                  <li class="nav-item">
+                    <a href="#" title="PERIFERICOS" class="level-1 trsn nav-link">PERIFERICOS</a>
+                </li>
+                  <li class="nav-item dropdown">
+                    <a href="#" title="LISTA PARTES" class="dropdown-toggle level-1 trsn nav-link" data-toggle>LISTA PARTES</a>
+                </li>
+                  <li class="nav-item">
+                    <a href="#" title="PORTATILES" class="level-1 trsn nav-link">PORTATILES</a>
+                </li>
+            </ul>    
+        </div>
+    </nav>
 </div>
 @if (articulos == null) {
     <p><em>Loading...</em></p>
@@ -36,8 +63,7 @@ else
     </div>
 }
 @code {
-    private Articulo[] Art;
-
+    
     private IEnumerable<Articulo> articulos;
 
     protected override async Task OnInitializedAsync()
