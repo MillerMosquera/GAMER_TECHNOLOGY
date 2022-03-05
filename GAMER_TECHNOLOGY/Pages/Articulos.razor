@@ -2,6 +2,7 @@
 @using Data.Model
 @using Data.Service
 
+
 @inject IArticuloService ArticuloService
 @inject NavigationManager NavigationManager
 
@@ -53,17 +54,17 @@ else
                 <div class="caption">
                     <a>@listArt.Nombre</a>
                     <p>@listArt.Descripcion</p>
-                    <button>Agregar</button>
+                    <button class="btn btn-primary">Agregar</button>
                 </div>
               
             </div>
             </div>
-            
         }
     </div>
 }
+
 @code {
-    
+
     private IEnumerable<Articulo> articulos;
 
     protected override async Task OnInitializedAsync()
@@ -76,5 +77,5 @@ else
         {
             throw;
         }
-    }
+    } 
 }
