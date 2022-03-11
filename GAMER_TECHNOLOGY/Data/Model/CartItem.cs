@@ -1,7 +1,6 @@
-﻿
-namespace GAMER_TECHNOLOGY.Data.Model
+﻿namespace GAMER_TECHNOLOGY.Data.Model
 {
-    public class Articulo
+    public class CartItem
     {
         public int IdArticulo { get; set; }
         public int Codigo { get; set; }
@@ -9,5 +8,6 @@ namespace GAMER_TECHNOLOGY.Data.Model
         public string Descripcion { get; set; }
         public string Imagen { get; set; }
         public string Categoria { get; set; }
+        public int Quantity { get; set; }
     }
 }

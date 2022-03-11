@@ -49,7 +49,7 @@ namespace GAMER_TECHNOLOGY.Data.Service
             }
         }
         //Obtener solo uno por el id
-        public async Task<IEnumerable<Articulo>> GetId(Guid id)
+        public async Task<IEnumerable<Articulo>> GetId(int id)
         {
             using (var conn = new SqlConnection(_configuration.Value))
             {
@@ -77,7 +77,7 @@ namespace GAMER_TECHNOLOGY.Data.Service
             }
         }
 
-        public async Task Delete(Guid id)
+        public async Task Delete(int id)
         {
             using (var conn = new SqlConnection(_configuration.Value))
             {

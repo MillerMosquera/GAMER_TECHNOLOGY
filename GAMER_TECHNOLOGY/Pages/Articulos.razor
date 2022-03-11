@@ -1,10 +1,17 @@
 ﻿@page "/Articulos"
 @using Data.Model
 @using Data.Service
-
-
+@using Pages
+@using Blazored.Toast.Services;
+@using Microsoft.AspNetCore.Components;
+@using System.Diagnostics;
+                            
 @inject IArticuloService ArticuloService
+@inject ILocalStorageService LocalStorage
+@inject IToastService ToastService
+@inject ICartService CartService 
 @inject NavigationManager NavigationManager
+
 
 
 <div>
@@ -43,21 +50,25 @@
 }
 else
 {
-    <div>
+    <div class="row mb-md-5 mb-4 mx-md-n2 mx-n1 no-gutters">
         @foreach (var listArt in articulos)
         {
-            <div class="row mb-md-5 mb-4 mx-md-n2 mx-n1 no-gutters">
                 <div class="col-lg-3 col-6 px-md-2 px-1">
-                   <div class="product-block">
-                      <img src="@listArt.Imagen"/>
+                   <div class="product-block text-center mb-md-3 mb-2 p-md-3 p-2 rounded trsn">
+                      <a class="product-img d-block">
+                          <img class="img-fluid img-portfolio img-hover mb-2"src="@listArt.Imagen"/>
+                      </a>
                 </div>
                 <div class="caption">
-                    <a>@listArt.Nombre</a>
+                    <div class="brand-name small trsn">
+                        <h4>
+                            <a>@listArt.Nombre</a>
+                        </h4>
+                    </div>
                     <p>@listArt.Descripcion</p>
-                    <button class="btn btn-primary">Agregar</button>
+                    <button  @onclick="Save" class="btn btn-primary" type="button">Agregar</button>
                 </div>
               
-            </div>
             </div>
         }
     </div>
@@ -72,10 +83,36 @@ else
         try
         {
             articulos = await ArticuloService.GetAll();
+
         }
         catch(Exception)
         {
             throw;
         }
-    } 
+    }
+
+    public Articulo articulo = new Articulo();
+    //public void GuardarDatos() => LocalStorage.SetValue<Articulo>(ValuesKeys.Carritos, articulo);
+
+
+    private Articulo articulop = new Articulo();
+
+    private CartItem cartItem = new CartItem{Quantity = 1};
+
+    [Parameter]
+    public int id { get; set; }
+
+
+    private async Task AddToCart()
+    {
+        await CartService.AddToCart(cartItem);
+    }
+
+
+    public async void Save()
+    {
+        await LocalStorage.SetItemAsync("carrrito", articulop);
+    }
+
+
 }

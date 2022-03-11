@@ -1,3 +1,5 @@
+using Blazored.LocalStorage;
+using Blazored.Toast;
 using GAMER_TECHNOLOGY.Data;
 using GAMER_TECHNOLOGY.Data.Service;
 using Microsoft.AspNetCore.Builder;
@@ -31,6 +33,11 @@ namespace GAMER_TECHNOLOGY
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddScoped<IArticuloService, ArticuloService>();
+            services.AddBlazoredLocalStorage();
+            //registro de interfaz
+            
+            services.AddScoped<ICartService, CartService>();
+            services.AddBlazoredToast();
 
             //Conexion DB
             var SqlConnectionConfiguration = new SqlConnectionConfiguration(Configuration.GetConnectionString("SqlDBContext"));
