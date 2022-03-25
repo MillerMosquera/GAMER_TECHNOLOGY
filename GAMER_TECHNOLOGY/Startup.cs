@@ -37,6 +37,7 @@ namespace GAMER_TECHNOLOGY
             //registro de interfaz
             
             services.AddScoped<ICartService, CartService>();
+            services.AddScoped<ICarritoService, CarritoService>();
             services.AddBlazoredToast();
 
             //Conexion DB

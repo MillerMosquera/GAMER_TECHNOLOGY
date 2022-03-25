@@ -1,14 +1,16 @@
 ﻿namespace GAMER_TECHNOLOGY.Data.Model
 {
-    public class CartItem
+    public class Carrito
     {
-        public int Id_cart { get; set; }
+        public int Idcart { get; set; }
         public int IdArticulo { get; set; }
         public int Codigo { get; set; }
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
         public string Imagen { get; set; }
         public string Categoria { get; set; }
-        public int Quantity { get; set; }
+        public float Precio { get; set; }
+        public int Cantidad { get; set; }
+        public float Subtotal { get; set; }
     }
 }

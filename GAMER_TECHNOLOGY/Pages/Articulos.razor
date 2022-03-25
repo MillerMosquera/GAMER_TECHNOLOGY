@@ -66,6 +66,8 @@ else
                         </h4>
                     </div>
                     <p>@listArt.Descripcion</p>
+                    <span>@listArt.Precio</span>
+                    <br/>
                     <button  @onclick="Save" class="btn btn-primary" type="button">Agregar</button>
                 </div>
               
@@ -92,7 +94,7 @@ else
     }
 
     public Articulo articulo = new Articulo();
-    //public void GuardarDatos() => LocalStorage.SetValue<Articulo>(ValuesKeys.Carritos, articulo);
+    
 
 
     private Articulo articulop = new Articulo();
