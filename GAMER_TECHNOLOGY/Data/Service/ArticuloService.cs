@@ -31,9 +31,10 @@ namespace GAMER_TECHNOLOGY.Data.Service
                 parameters.Add("Descripcion", articulo.Descripcion, DbType.String);
                 parameters.Add("Imagen", articulo.Imagen, DbType.String);
                 parameters.Add("Categoria", articulo.Categoria, DbType.String);
+                parameters.Add("Precio", articulo.Precio, DbType.Double);
 
-                const string InsertArticulo = @"INSERT INTO dbo.Articulo (IdArticulo, Codigo, Nombre, Descripcion, Imagen, Categoria) " +
-                    "VALUES (@IdArticulo, @Codigo, @Nombre, @Descripcion,@Imagen,@Categoria)";
+                const string InsertArticulo = @"INSERT INTO dbo.Articulo (IdArticulo, Codigo, Nombre, Descripcion, Imagen, Categoria, Precio) " +
+                    "VALUES (@IdArticulo, @Codigo, @Nombre, @Descripcion,@Imagen,@Categoria,@Precio)";
 
                 await conn.ExecuteAsync(InsertArticulo, parameters);
             }
@@ -43,18 +44,18 @@ namespace GAMER_TECHNOLOGY.Data.Service
         {
             using (var conn = new SqlConnection(_configuration.Value))
             {
-                const string SelectArticulo = @"SELECT IdArticulo, Codigo, Nombre, Descripcion, Imagen, Categoria FROM dbo.Articulo";
+                const string SelectArticulo = @"SELECT * FROM dbo.Articulo";
                 var resultArticulos = await conn.QueryAsync<Articulo>(SelectArticulo);
                 return resultArticulos.ToList();
             }
         }
         //Obtener solo uno por el id
-        public async Task<IEnumerable<Articulo>> GetId(int id)
+        public async Task<Articulo> GetId(int IdArticulo)
         {
             using (var conn = new SqlConnection(_configuration.Value))
             {
                 const string SelectArticulo = @"SELECT * FROM dbo.Articulo WHERE IdArticulo = @IdArticulo";
-                return (IEnumerable<Articulo>)await conn.QuerySingleAsync<Articulo>(SelectArticulo, new { IdArticulo = id });
+                return await conn.QuerySingleAsync<Articulo>(SelectArticulo, new { IdArticulo = IdArticulo });
             }
         }
         //actualizar
@@ -69,11 +70,12 @@ namespace GAMER_TECHNOLOGY.Data.Service
                 parameters.Add("Descripcion", articulo.Descripcion, DbType.String);
                 parameters.Add("Imagen", articulo.Imagen, DbType.String);
                 parameters.Add("Categoria", articulo.Categoria, DbType.String);
+                parameters.Add("Precio", articulo.Precio, DbType.Double);
 
-                const string UpdateArticulo = @"UPDATE dbo.Articulo SET Codigo = @Codigo, Nombre = @Nombre, Descripcion = @Descripcion, Imagen = @Imagen, Categoria = @Categoria " +
+                const string UpdateArticulo = @"UPDATE dbo.Articulo SET IdArticulo = @IdArticulo, Codigo = @Codigo, Nombre = @Nombre, Descripcion = @Descripcion, Imagen = @Imagen, Categoria = @Categoria, Precio = @Precio " +
                 "WHERE IdArticulo = @IdArticulo";
 
-                await conn.ExecuteAsync(UpdateArticulo, parameters);
+                await conn.ExecuteAsync(UpdateArticulo, new {articulo.IdArticulo,articulo.Codigo,articulo.Nombre,articulo.Descripcion,articulo.Imagen,articulo.Categoria,articulo.Precio});
             }
         }
 

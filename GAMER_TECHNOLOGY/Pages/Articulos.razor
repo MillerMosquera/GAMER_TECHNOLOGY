@@ -1,80 +1,91 @@
 ﻿@page "/Articulos"
 @using Data.Model
 @using Data.Service
-@using Pages
-@using Blazored.Toast.Services;
 @using Microsoft.AspNetCore.Components;
-@using System.Diagnostics;
-                            
+
 @inject IArticuloService ArticuloService
-@inject ILocalStorageService LocalStorage
-@inject IToastService ToastService
-@inject ICartService CartService 
 @inject NavigationManager NavigationManager
 
 
-
+<header>
+    <div class="container-fluid  header-block trsn py-lg-4 py-0">
+        <div class="row align-items-center no-gutters">
+            <div class="col-sm-12 text-center">
+                <a href="/">
+                    <img style="max-width:15%" src="https://firebasestorage.googleapis.com/v0/b/gamertechnology-e709a.appspot.com/o/WhatsApp_Image_2022-04-03_at_11.05.13_PM-removebg-preview.png?alt=media&token=a2b9a609-80f9-495a-b6d2-4ab58d43c7ba" class="navbar-brand store-image img-fluid"/>
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
 <div>
-    <h1>Articulos</h1>
-    <p>Esta es la pagina de Articulos</p>
     <nav id="main-menu" class="navbar-expand-md d-none d-lg-block vertical_menu navbar-fixed">
         <div class="collapse navbar-collapse" id="navbarsContainer">
             <ul class="navbar-nav m-auto">
                 <li class="nav-item">
                     <a href="#" title="COMBOS" class="level-1 trsn nav-link">COMBOS</a>
                 </li>
-                  <li class="nav-item">
+                <li class="nav-item">
                     <a href="#" title="PC GAMER" class="level-1 trsn nav-link">PC GAMER</a>
                 </li>
-                  <li class="nav-item">
+                <li class="nav-item">
                     <a href="#" title="TARJETA GRAFICA" class="level-1 trsn nav-link">TARJETAS GRAFICAS</a>
                 </li>
-                  <li class="nav-item">
+                <li class="nav-item">
                     <a href="#" title="PANTALLAS" class="level-1 trsn nav-link">PANTALLAS</a>
                 </li>
-                  <li class="nav-item">
+                <li class="nav-item">
                     <a href="#" title="PERIFERICOS" class="level-1 trsn nav-link">PERIFERICOS</a>
                 </li>
-                  <li class="nav-item dropdown">
+                <li class="nav-item dropdown">
                     <a href="#" title="LISTA PARTES" class="dropdown-toggle level-1 trsn nav-link" data-toggle>LISTA PARTES</a>
                 </li>
-                  <li class="nav-item">
+                <li class="nav-item">
                     <a href="#" title="PORTATILES" class="level-1 trsn nav-link">PORTATILES</a>
                 </li>
-            </ul>    
+            </ul>
         </div>
     </nav>
 </div>
-@if (articulos == null) {
+@if (articulos == null)
+{
     <p><em>Loading...</em></p>
 }
 else
 {
     <div class="row mb-md-5 mb-4 mx-md-n2 mx-n1 no-gutters">
-        @foreach (var listArt in articulos)
+        @foreach (var item in articulos)
         {
-                <div class="col-lg-3 col-6 px-md-2 px-1">
-                   <div class="product-block text-center mb-md-3 mb-2 p-md-3 p-2 rounded trsn">
-                      <a class="product-img d-block">
-                          <img class="img-fluid img-portfolio img-hover mb-2"src="@listArt.Imagen"/>
-                      </a>
-                </div>
-                <div class="caption">
-                    <div class="brand-name small trsn">
-                        <h4>
-                            <a>@listArt.Nombre</a>
-                        </h4>
+            <div class="col-lg-3 col-6 px-md-2 px-1" >
+                <div class="product-block text-center mb-md-3 mb-2 p-md-3 p-2 rounded trsn" style="border:1px solid #f1f1f1">
+                    <a href="/PageArticulo/@item.IdArticulo" class="product-image d-block ">
+
+                        <img class="img-portfolio img-hover mb-2" src="@item.Imagen" style="max-width: 80%" alt="@item.Nombre">
+
+                    </a>
+                    <div class="caption">
+                        <div class="brand-name small trsn">
+
+                            <h4><a href="/teclado-mintaka-mecanico-rgb">@item.Nombre</a></h4>
+                        </div>
+
+                        <div class="list-price">
+
+                            <span class="product-block-normal">$@string.Format("{0:#,#}",item.Precio) COP</span>
+
+                        </div>
+
                     </div>
-                    <p>@listArt.Descripcion</p>
-                    <button  @onclick="Save" class="btn btn-primary" type="button">Agregar</button>
                 </div>
-              
+
             </div>
         }
     </div>
+
 }
 
 @code {
+
 
     private IEnumerable<Articulo> articulos;
 
@@ -83,36 +94,10 @@ else
         try
         {
             articulos = await ArticuloService.GetAll();
-
         }
-        catch(Exception)
+        catch (Exception)
         {
             throw;
         }
     }
-
-    public Articulo articulo = new Articulo();
-    //public void GuardarDatos() => LocalStorage.SetValue<Articulo>(ValuesKeys.Carritos, articulo);
-
-
-    private Articulo articulop = new Articulo();
-
-    private CartItem cartItem = new CartItem{Quantity = 1};
-
-    [Parameter]
-    public int id { get; set; }
-
-
-    private async Task AddToCart()
-    {
-        await CartService.AddToCart(cartItem);
-    }
-
-
-    public async void Save()
-    {
-        await LocalStorage.SetItemAsync("carrrito", articulop);
-    }
-
-
 }

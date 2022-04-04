@@ -2,6 +2,7 @@
 {
     public class CartItem
     {
+        public int Id_cart { get; set; }
         public int IdArticulo { get; set; }
         public int Codigo { get; set; }
         public string Nombre { get; set; }

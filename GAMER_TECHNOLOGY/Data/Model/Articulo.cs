@@ -9,5 +9,8 @@ namespace GAMER_TECHNOLOGY.Data.Model
         public string Descripcion { get; set; }
         public string Imagen { get; set; }
         public string Categoria { get; set; }
+        public double Precio { get; set; }
+
+        
     }
 }

@@ -1,0 +1,138 @@
+﻿@page "/checkout"
+
+<div class="container cart my-5">
+    <!-- Cart Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="cart-header mb-5 text-center">
+                <a href="https://www.tiendagamermedellin.co" title="Tienda Gamer Medellin" class="logo d-block">
+                    <img src="" class="">
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-8 mb-4">
+            <h1>Carro de Compras</h1>
+            <form id="" method="post" action="">
+                <div class="table-responsive">
+                    <input type="text" required="" class="col-md-12" name="email" placeholder="E-mail" value=""
+                           style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out; ">
+                    <br/>
+                    <input type="text" requerid="" class="col-md-12" name="numero" placeholder="Numero Celular"
+                           value=""
+                           style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out; ">
+                </div>
+
+                <div class="col-12">
+                    <div class="separatedContent">
+                        <br />
+                        <h5>Información del Envío</h5>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-sm-6 px-3 form-group">
+                            <div class="floating-label-wrap ">
+                                <input type="text" required="" class="col-md-12" id="name" placeholder="Nombre"
+                                       autocomplete="given-name" value=""
+                                       style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55 ease-in-out; ">
+                            </div>
+                            <br />
+                        </div>
+                        <div class="col-sm-6 px-3 form-group">
+                            <div class="floating-label-wrap ">
+                                <input type="text" required="" class="col-md-12" id="surname" placeholder="Apellido"
+                                       autocomplete="family-name" value=""
+                                       style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55 ease-in-out;">
+                            </div>
+                        </div>
+                        <div class="col-12 px-3 form-group">
+                            <div class="floating-label-wrap ">
+                                <input type="text" required="" class="col-md-12" id="address"
+                                       placeholder="Dirección" autocomplete="street-address" value=""
+                                       style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55 ease-in-out; ">
+                            </div>
+                            <br />
+                        </div>
+                        <div class="col-12 px-3 form-group">
+                            <div class="floating-label-wrap ">
+                                <input type="text" class="col-md-12" id="complement"
+                                       placeholder="Apartamento, casa, puerta, etc. (opcional)" value=""
+                                       style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55 ease-in-out; ">
+                            </div>
+                            <br />
+                        </div>
+                        <div class="col-sm-6 px-3 form-group">
+                            <div class="floating-label-wrap ">
+                                <input type="text" class="col-md-12" id="city" placeholder="Ciudad"
+                                       autocomplete="address-level2" value=""
+                                       style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55 ease-in-out; ">
+                            </div>
+                            <br />
+                        </div>
+                        <div class="col-12 px-3 form-group">
+                            <div class="floating-label-wrap ">
+                                <input type="text" class="col-md-12" id="complement" placeholder="Departamento"
+                                       value=""
+                                       style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55 ease-in-out; ">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-6 mt-4">
+                        <button class="btn btn-primary"
+                                style=" color: rgb(255, 255, 255); font-size:14px;line-height:1.5rem;width:80%;padding:1.2em;">
+                            Ir a Envío
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="summary-header"
+                         style="align-items: center; display: flex;justify-content:space-between; padding:0.75rem 1rem 0.25rem;">
+                        <h6>Resumen del pedido</h6>
+                        <button class="btn summary-btn"
+                                style="border-color:#0d6efd; color:#0d6efd; font-size:12px; text-transform:uppercase;">
+                            Editar
+                            Carrito
+                        </button>
+                    </div>
+                    <hr />
+                    <div style="align-items: center; display: flex;justify-content:space-between; padding:0.75rem 1rem 0.25rem;">
+                        <span>Nombre producto</span>
+                        <b>$Valor COP</b>
+                    </div>
+                    <hr />
+
+
+                    <div>
+                        <div style="align-items: center; display: flex;justify-content:space-between; padding:0.75rem 1rem 0.25rem;">
+
+                            <span>Total Parcial</span>
+                            <span>$Valor COP</span>
+                        </div>
+                        <div style="align-items: center; display: flex;justify-content:space-between; padding:0.75rem 1rem 0.25rem;">
+                            <span>Descuento</span>
+                            <span>$-descuento COP</span>
+                        </div>
+                    </div>
+                    <hr />
+                    <div style="align-items: center; display: flex;justify-content:space-between; padding:0.75rem 1rem 0.25rem;">
+                        <b>Total</b>
+                        <b>$Total COP</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+}
