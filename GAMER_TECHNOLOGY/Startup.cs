@@ -1,11 +1,14 @@
 using Blazored.LocalStorage;
 using Blazored.Toast;
+using GAMER_TECHNOLOGY.Areas.Identity;
 using GAMER_TECHNOLOGY.Data;
 using GAMER_TECHNOLOGY.Data.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -39,11 +42,12 @@ namespace GAMER_TECHNOLOGY
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<ICarritoService, CarritoService>();
             services.AddBlazoredToast();
-
             //Conexion DB
             var SqlConnectionConfiguration = new SqlConnectionConfiguration(Configuration.GetConnectionString("SqlDBContext"));
             //Patron Singleton
             services.AddSingleton(SqlConnectionConfiguration);
+
+            services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,6 +68,8 @@ namespace GAMER_TECHNOLOGY
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

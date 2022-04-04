@@ -1,0 +1,220 @@
+﻿@page "/carrito"
+
+@using Data.Model
+@using Data.Service
+@using Microsoft.AspNetCore.Components;
+@using Microsoft.AspNetCore.Identity
+
+@inject IArticuloService ArticuloService
+@inject ICarritoService CarritoService
+@inject NavigationManager NavigationManager
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+
+@if (carritos == null)
+{
+    <div class="container mt-md-0 my-5">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="page-header" style="text-align:center">Carro de Compras</h1>
+            </div>
+            <section class="col-md-8 offset-md-2 text-center">
+                <div class="card">
+                    <div class="card-body">
+                        <p>El carro de compras está vacío. Puedes volver y comenzar a agregar productos.</p>
+                        <a href="/" class="btn btn-secondary btn-block" title="← Volver y Seguir Comprando">Volver y Seguir Comprando</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-lg-8 mb-4">
+                <h1>Carrito de compras</h1>
+                <form id="cart-update-form" method="post">
+                    <div class="table-responsive card">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th class="d-none d-sm-table-cell"></th>
+                                    <th>Cantidad</th>
+                                    <th>Precio Unitario</th>
+                                    <th>Subtotal</th>
+                                    <th class="d-none d-sm-table-cell"></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            @foreach (var cart in carritos)
+                            {
+                                subtotal = carritos.Sum(cart => cart.Cantidad * cart.Precio);
+                                descuento = subtotal / 100 * 5;
+                                total = subtotal - descuento;
+
+                                <tbody>
+                                    <tr>
+                                        <td class="d-none d-sm-table-cell">
+                                            <a href="/teclado-mintaka-mecanico-rgb" class="trsn" title="MINTAKA MECANICO RGB - VSG">
+
+                                                <img src="@cart.Imagen " style="max-width:80px" />
+
+                                            </a>
+                                        </td>
+                                        <td class="product_info">
+                                            <h3 style="font-size:1em">@cart.Nombre</h3>
+
+                                        </td>
+                                        <td>
+                                            <div class="select">
+                                                <select class="select select-qty form-control" title="Cantidad" @bind="cart.Cantidad">
+                                                    <option value="1" selected="selected">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                    <option value="6">6</option>
+                                                    <option value="7">7</option>
+                                                    <option value="8">8</option>
+                                                    <option value="9">9</option>
+                                                    <option value="10">10</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td class="d-none d-sm-table-cell">
+
+                                            <div class="cart-product-discount">
+                                                <span>
+                                                    $@string.Format("{0:#,#}",cart.Precio) COP
+                                                    <br>
+                                                </span>
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+                                            <span class="order-product-subtotal cart-value">$@string.Format("{0:#,#}",(cart.Precio * cart.Cantidad))COP</span>
+                                        </td>
+                                        <td> <a class="cart-product-remove" title="Quitar Producto" @onclick="@(() => deletearticulo(cart))"><i class="oi oi-trash"></i></a></td>
+                                    </tr>
+
+                                </tbody>
+                            }
+                        </table>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 cart-estimate">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h2 class="card-title">Costo estimado de envío</h2>
+                                <div id="estimate_shipping">
+                                    <form action="/cart/estimate" accept-charset="UTF-8" id="estimate_shipping_form" autocomplete="off" method="post">
+                                        <!-- Country -->
+                                    <div class="form-group arrow">
+                                            <label for="estimate_shipping_country">País</label><select name="estimate[country]" id="estimate_shipping_country" class="select form-control">
+                                                <option value="CO" selected="selected">Colombia</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="estimate_shipping_buttons">
+                                            <input id="estimate_shipping_button" type="submit" value="Calcular Envío " class="btn btn-secondary btn-block">
+                                        </div>
+                                        <input type="hidden">
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h2 class="card-title">Revisión del pedido</h2>
+                                <table class="table review mb-0">
+
+                                    <tbody>
+                                        <tr class="totals">
+                                            <td colspan="1" class="text-left">Subtotal</td>
+                                            <td colspan="1" class="text-right">$@string.Format("{0:#,#}",subtotal) COP</td>
+                                        </tr>
+
+                                        <tr class="totals">
+                                            <td colspan="1" class="text-left">Descuento</td>
+                                            <td colspan="1" class="text-right">$-@string.Format("{0:#,#}",descuento) COP</td>
+                                        </tr>
+
+
+                                        <tr class="totals key">
+                                            <td colspan="1" class="text-left"><strong>Total</strong></td>
+                                            <td colspan="1" class="text-right"><strong>$@string.Format("{0:#,#}",total) COP</strong></td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="cart-actions text-center">
+
+                            <a href="/checkout" class="btn btn-primary btn-block" title="Proceder al Pago" id="proceed_to_checkout">Proceder al Pago</a>
+
+                            <a href="/" class="continue small mt-2 d-block" title="← Continúa Comprando">← Continúa Comprando</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    Carrito carrito = new Carrito();
+    private IEnumerable<Carrito> carritos;
+    [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    public double subtotal = 0;
+    public double descuento = 0;
+    public double total = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await authenticationStateTask).User;
+        var email_user = user.Identity.Name;
+
+        try
+        {
+            if (SignInManager.IsSignedIn(user))
+            {
+
+                carritos = await CarritoService.GetEmail(email_user);
+
+            }
+            else
+            {
+
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public async Task deletearticulo(Carrito cart)
+    {
+        var user = (await authenticationStateTask).User;
+        var email_user = user.Identity.Name;
+
+        await CarritoService.Delete(cart);
+        carritos = await CarritoService.GetEmail(email_user);
+    }
+
+
+}

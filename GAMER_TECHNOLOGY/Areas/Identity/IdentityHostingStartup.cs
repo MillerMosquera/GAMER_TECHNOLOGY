@@ -19,7 +19,13 @@ namespace GAMER_TECHNOLOGY.Areas.Identity
                     options.UseSqlServer(
                         context.Configuration.GetConnectionString("SqlDBContext")));
 
-                services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                services.AddDefaultIdentity<IdentityUser>(options => {
+                    options.SignIn.RequireConfirmedAccount = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireUppercase = false;
+                })
                     .AddEntityFrameworkStores<GAMER_TECHNOLOGYContext>();
             });
         }

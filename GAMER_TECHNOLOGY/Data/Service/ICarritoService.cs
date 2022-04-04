@@ -6,9 +6,9 @@ namespace GAMER_TECHNOLOGY.Data.Service
 {
     public interface ICarritoService
     {
-        Task Delete(int id);
-        Task<IEnumerable<Carrito>> GetAll();
-        Task<IEnumerable<Carrito>> GetId(int id);
+        Task Delete(Carrito cart);
+        Task<IEnumerable<Carrito>> GetCart();
+        Task<IEnumerable<Carrito>> GetEmail(string email_user);
         Task InsertCarrito(Carrito carrito);
         Task UpdateArticulo(Carrito carrito);
     }
