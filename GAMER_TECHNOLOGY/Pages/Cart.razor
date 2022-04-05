@@ -4,9 +4,12 @@
 @using Data.Service
 @using Microsoft.AspNetCore.Components;
 @using Microsoft.AspNetCore.Identity
+@using Blazored.LocalStorage
 
 @inject IArticuloService ArticuloService
 @inject ICarritoService CarritoService
+@inject ICartService CartService
+@inject ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager
 
 @inject SignInManager<IdentityUser> SignInManager
@@ -53,6 +56,7 @@ else
                             </thead>
                             @foreach (var cart in carritos)
                             {
+
                                 subtotal = carritos.Sum(cart => cart.Cantidad * cart.Precio);
                                 descuento = subtotal / 100 * 5;
                                 total = subtotal - descuento;
@@ -87,22 +91,18 @@ else
                                             </div>
                                         </td>
                                         <td class="d-none d-sm-table-cell">
-
                                             <div class="cart-product-discount">
                                                 <span>
                                                     $@string.Format("{0:#,#}",cart.Precio) COP
                                                     <br>
                                                 </span>
                                             </div>
-
                                         </td>
-
                                         <td>
                                             <span class="order-product-subtotal cart-value">$@string.Format("{0:#,#}",(cart.Precio * cart.Cantidad))COP</span>
                                         </td>
                                         <td> <a class="cart-product-remove" title="Quitar Producto" @onclick="@(() => deletearticulo(cart))"><i class="oi oi-trash"></i></a></td>
                                     </tr>
-
                                 </tbody>
                             }
                         </table>
@@ -171,6 +171,8 @@ else
             </div>
         </div>
     </div>
+
+
 }
 
 @code {
@@ -183,27 +185,31 @@ else
     public double descuento = 0;
     public double total = 0;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var user = (await authenticationStateTask).User;
-        var email_user = user.Identity.Name;
-
-        try
+        if (firstRender)
         {
-            if (SignInManager.IsSignedIn(user))
+            var user = (await authenticationStateTask).User;
+            var email_user = user.Identity.Name;
+
+            try
             {
+                if (SignInManager.IsSignedIn(user))
+                {
 
-                carritos = await CarritoService.GetEmail(email_user);
+                    carritos = await CarritoService.GetEmail(email_user);
 
+                }
+                else
+                {
+                    carritos = await CartService.GetCartItems();
+                }
             }
-            else
+            catch (Exception)
             {
-
+                throw;
             }
-        }
-        catch (Exception)
-        {
-            throw;
+            StateHasChanged();
         }
     }
 
@@ -212,9 +218,16 @@ else
         var user = (await authenticationStateTask).User;
         var email_user = user.Identity.Name;
 
-        await CarritoService.Delete(cart);
-        carritos = await CarritoService.GetEmail(email_user);
+        if (SignInManager.IsSignedIn(user))
+        {
+            await CarritoService.Delete(cart);
+            carritos = await CarritoService.GetEmail(email_user);
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/carrito", true);
+            await CartService.DeleteItem(cart);
+        }
     }
-
 
 }

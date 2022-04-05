@@ -15,7 +15,7 @@ namespace GAMER_TECHNOLOGY.Data.Service
         private readonly IToastService _toastService;
         private readonly IArticuloService _articuloService;
 
-        public event Action OnChange;
+    
 
         public CartService(ILocalStorageService localStorage, IArticuloService articuloService, IToastService toastService)
         {
@@ -24,61 +24,61 @@ namespace GAMER_TECHNOLOGY.Data.Service
             _articuloService = articuloService;
         }
 
-        public async Task AddToCart(CartItem item)
+        public async Task AddToCart(Carrito carrito)
         {
-            var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
+            var cart = await _localStorage.GetItemAsync<List<Carrito>>("cart");
             if (cart == null)
             {
-                cart = new List<CartItem>();
+                cart = new List<Carrito>();
             }
 
             var sameItem = cart
-                .Find(x => x.IdArticulo == item.IdArticulo && x.Codigo == item.Codigo);
+                .Find(x => x.Id_articulo == carrito.Id_articulo && x.Codigo == carrito.Codigo);
             if (sameItem == null)
             {
-                cart.Add(item);
+                cart.Add(carrito);
             }
             else
             {
-                sameItem.Quantity += item.Quantity;
+                sameItem.Cantidad += carrito.Cantidad;
             }
 
             await _localStorage.SetItemAsync("cart", cart);
 
-            var articulo = await _articuloService.GetId(item.IdArticulo);
+            var articulo = await _articuloService.GetId(carrito.Id_articulo);
             _toastService.ShowSuccess("Added to cart:");
 
-            OnChange.Invoke();
+         
         }
-        public async Task<List<CartItem>> GetCartItems()
+        public async Task<List<Carrito>> GetCartItems()
         {
-            var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
+            var cart = await _localStorage.GetItemAsync<List<Carrito>>("cart");
             if (cart == null)
             {
-                return new List<CartItem>();
+                return new List<Carrito>();
             }
             return cart;
         }
 
-        public async Task DeleteItem(CartItem item)
+        public async Task DeleteItem(Carrito carrito)
         {
-            var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
+            var cart = await _localStorage.GetItemAsync<List<Carrito>>("cart");
             if (cart == null)
             {
                 return;
             }
 
-            var cartItem = cart.Find(x => x.IdArticulo == item.IdArticulo && x.Codigo == item.Codigo);
+            var cartItem = cart.Find(x => x.Id_articulo == carrito.Id_articulo && x.Codigo == carrito.Codigo);
             cart.Remove(cartItem);
 
             await _localStorage.SetItemAsync("cart", cart);
-            OnChange.Invoke();
+            
         }
 
         public async Task EmptyCart()
         {
             await _localStorage.RemoveItemAsync("cart");
-            OnChange.Invoke();
+            
         }
     }
 }

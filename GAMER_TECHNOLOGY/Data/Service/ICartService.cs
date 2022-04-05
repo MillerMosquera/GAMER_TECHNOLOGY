@@ -7,11 +7,9 @@ namespace GAMER_TECHNOLOGY.Data.Service
 {
     public interface ICartService
     {
-        event Action OnChange;
-
-        Task AddToCart(CartItem item);
-        Task DeleteItem(CartItem item);
+        Task AddToCart(Carrito carrito);
+        Task DeleteItem(Carrito carrito);
         Task EmptyCart();
-        Task<List<CartItem>> GetCartItems();
+        Task<List<Carrito>> GetCartItems();
     }
 }
