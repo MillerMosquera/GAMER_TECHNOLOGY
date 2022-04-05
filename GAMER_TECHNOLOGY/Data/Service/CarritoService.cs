@@ -23,7 +23,6 @@ namespace GAMER_TECHNOLOGY.Data.Service
             {
 
                 var parameters = new DynamicParameters();
-                parameters.Add("Id_cart", carrito.Id_cart, DbType.Int32);
                 parameters.Add("Id_articulo", carrito.Id_articulo, DbType.Int32);
                 parameters.Add("Codigo", carrito.Codigo, DbType.Int32);
                 parameters.Add("Nombre", carrito.Nombre, DbType.String);
@@ -69,7 +68,6 @@ namespace GAMER_TECHNOLOGY.Data.Service
             using (var conn = new SqlConnection(_configuration.Value))
             {
                 var parameters = new DynamicParameters();
-                parameters.Add("Idcart", carrito.Id_cart, DbType.Int32);
                 parameters.Add("IdArticulo", carrito.Id_articulo, DbType.Int32);
                 parameters.Add("Codigo", carrito.Codigo, DbType.Int32);
                 parameters.Add("Nombre", carrito.Nombre, DbType.String);
@@ -81,7 +79,7 @@ namespace GAMER_TECHNOLOGY.Data.Service
                 
 
                 const string UpdateCart = @"UPDATE dbo.Carrito SET Id_articulo = @Id_articulo, Codigo = @Codigo, Nombre = @Nombre, Descripcion = @Descripcion, Imagen = @Imagen, Categoria = @Categoria, Precio = @Precio, Cantidad = @Cantidad" +
-                "WHERE Id_cart = @Id_cart";
+                "WHERE Id_articulo = @Id_articulo";
 
                 await conn.ExecuteAsync(UpdateCart, new { carrito.Id_articulo, carrito.Codigo, carrito.Nombre, carrito.Descripcion, carrito.Imagen, carrito.Categoria, carrito.Precio, carrito.Cantidad });
             }
