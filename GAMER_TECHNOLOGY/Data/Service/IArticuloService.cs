@@ -11,6 +11,8 @@ namespace GAMER_TECHNOLOGY.Data.Service
         Task<IEnumerable<Articulo>> GetAll();
         Task<Articulo> GetId(int IdArticulo);
         Task InsertArt(Articulo articulo);
+
+        Task<IEnumerable<Articulo>> GetCategoria();
         Task UpdateArticulo(Articulo articulo);
     }
 }

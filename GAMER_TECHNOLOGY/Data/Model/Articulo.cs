@@ -11,6 +11,7 @@ namespace GAMER_TECHNOLOGY.Data.Model
         public string Categoria { get; set; }
         public double Precio { get; set; }
 
+        public double Descuento { get; set; }
         
     }
 }

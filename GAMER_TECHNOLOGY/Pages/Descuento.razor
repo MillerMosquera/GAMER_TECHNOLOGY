@@ -1,11 +1,11 @@
-﻿@page "/Articulos"
+﻿@page "/descuentos"
+
 @using Data.Model
 @using Data.Service
 @using Microsoft.AspNetCore.Components;
 
 @inject IArticuloService ArticuloService
 @inject NavigationManager NavigationManager
-
 
 <header>
     <div class="container-fluid  header-block trsn py-lg-4 py-0">
@@ -18,35 +18,7 @@
         </div>
     </div>
 </header>
-<div>
-    <nav id="main-menu" class="navbar-expand-md d-none d-lg-block vertical_menu navbar-fixed">
-        <div class="collapse navbar-collapse" id="navbarsContainer">
-            <ul class="navbar-nav m-auto">
-                <li class="nav-item">
-                    <a href="#" title="Combos" class="level-1 trsn nav-link">Combos</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" title="Tarjeta Grafica" class="level-1 trsn nav-link">Tarjetas Graficas</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" title="Pantallas" class="level-1 trsn nav-link">Pantallas</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" title="Periféricos" class="level-1 trsn nav-link">Periféricos</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a href="#" title="LISTA PARTES" class="dropdown-toggle level-1 trsn nav-link" data-toggle>Lista de Partes</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" title="Sillas" class="level-1 trsn nav-link">Sillas</a>
-                </li>
-                <li class="nav-item">
-                    <a href="/descuentos" title="Descuentos" class="level-1 trsn nav-link">Descuentos</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-</div>
+<h5>Productos con descuentos</h5>
 @if (articulos == null)
 {
     <p><em>Loading...</em></p>
@@ -56,9 +28,14 @@ else
     <div class="row mb-md-5 mb-4 mx-md-n2 mx-n1 no-gutters">
         @foreach (var item in articulos)
         {
+            subtotal =  cantidad * item.Precio;
+            descuento = subtotal / 100 * item.Descuento;
+            total = subtotal - descuento;
+
             <div class="col-lg-3 col-6 px-md-2 px-1">
                 <div class="product-block text-center mb-md-3 mb-2 p-md-3 p-2 rounded trsn" style="border:1px solid #f1f1f1">
                     <a href="/PageArticulo/@item.IdArticulo" class="product-image d-block ">
+                        <span class="badge status-tag sale" style="color:white;background-color: #c60613!important; position: absolute; text-transform: uppercase; z-index: 2; top: 15px; left: 6%;font-size: 0.75em">Descuento -@item.Descuento%</span>
                         <img class="img-portfolio img-hover mb-2" src="@item.Imagen" style="max-width: 80%" alt="@item.Nombre">
 
                     </a>
@@ -70,7 +47,8 @@ else
 
                         <div class="list-price">
 
-                            <span class="product-block-normal">$@string.Format("{0:#,#}",item.Precio) COP</span>
+                            <span class="product-block-normal">$@string.Format("{0:#,#}",total) COP</span>
+                            <span class="product-block-discount text-muted" style="text-decoration: line-through">$@string.Format("{0:#,#}",item.Precio) COP</span>
 
                         </div>
 
@@ -84,15 +62,19 @@ else
 }
 
 @code {
-
-
     private IEnumerable<Articulo> articulos;
+
+        public double subtotal = 0;
+    public double descuento = 0;
+    public double total = 0;
+    public int cantidad = 1;
 
     protected override async Task OnInitializedAsync()
     {
+
         try
         {
-            articulos = await ArticuloService.GetAll();
+            articulos = await ArticuloService.GetCategoria();
         }
         catch (Exception)
         {
