@@ -44,7 +44,7 @@ namespace GAMER_TECHNOLOGY.Data.Service
         {
             using (var conn = new SqlConnection(_configuration.Value))
             {
-                const string SelectArticulo = @"SELECT * FROM dbo.Articulo";
+                const string SelectArticulo = @"SELECT TOP 15 * FROM dbo.Articulo ORDER BY NEWID()";
                 var resultArticulos = await conn.QueryAsync<Articulo>(SelectArticulo);
                 return resultArticulos.ToList();
             }
@@ -76,6 +76,15 @@ namespace GAMER_TECHNOLOGY.Data.Service
                 "WHERE IdArticulo = @IdArticulo";
 
                 await conn.ExecuteAsync(UpdateArticulo, new {articulo.IdArticulo,articulo.Codigo,articulo.Nombre,articulo.Descripcion,articulo.Imagen,articulo.Categoria,articulo.Precio});
+            }
+        }
+        public async Task<IEnumerable<Articulo>> GetCategoria()
+        {
+            using (var conn = new SqlConnection(_configuration.Value))
+            {
+                const string Categoria = @"SELECT * FROM dbo.Articulo WHERE descuento >= 1 ";
+                var result = await conn.QueryAsync<Articulo>(Categoria);
+                return result.ToList();
             }
         }
 
