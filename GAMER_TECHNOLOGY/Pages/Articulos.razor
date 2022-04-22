@@ -4,6 +4,7 @@
 @using Microsoft.AspNetCore.Components;
 
 @inject IArticuloService ArticuloService
+@inject IBusquedaService BusquedaService
 @inject NavigationManager NavigationManager
 
 
@@ -47,6 +48,14 @@
         </div>
     </nav>
 </div>
+<div style="display:flex; justify-content:center;align-content:center">
+    <div class="input-group col-md-6">
+        <input @bind="busqueda" type="text" placeholder="Buscar producto" class="form-control mr-sm-2" />
+        <span class="input-group-btn">
+            <input type="submit" class="btn btn-outline-success my-2 my-sm-0" value="Buscar" @onclick="(() => Buscar())" />
+        </span>
+    </div>
+</div>
 @if (articulos == null)
 {
     <p><em>Loading...</em></p>
@@ -70,7 +79,7 @@ else
 
                         <div class="list-price">
 
-                            <span class="product-block-normal">$@string.Format("{0:#,#}",item.Precio) COP</span>
+                            <span class="product-block-normal">$@string.Format("{0:#,#}", item.Precio) COP</span>
 
                         </div>
 
@@ -87,6 +96,7 @@ else
 
 
     private IEnumerable<Articulo> articulos;
+    private string busqueda { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -98,5 +108,10 @@ else
         {
             throw;
         }
+    }
+
+    public async Task Buscar()
+    {
+        articulos = await BusquedaService.GetBusqueda(busqueda);
     }
 }

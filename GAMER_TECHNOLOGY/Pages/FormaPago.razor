@@ -1,0 +1,516 @@
+﻿@page "/formapago"
+@using Radzen.Blazor
+@using Data.Model
+@using Data.Service
+@using Microsoft.AspNetCore.Components;
+@using Microsoft.AspNetCore.Identity
+@using Blazored.LocalStorage
+@using System.Text.Json;
+@using Newtonsoft.Json.Serialization
+
+@inject ILocalStorageService LocalStorage
+@inject ICarritoService CarritoService
+@inject ICartService CartService
+@inject IArticuloService ArticuloService
+@inject ICheckoutService CheckoutService
+
+
+@inject NavigationManager NavigationManager
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+<div class="container cart my-5">
+    <!-- Cart Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="cart-header mb-5 text-center">
+                <a href="/">
+                    <img style="max-width:15%"
+                         src="https://firebasestorage.googleapis.com/v0/b/gamertechnology-e709a.appspot.com/o/WhatsApp_Image_2022-04-03_at_11.05.13_PM-removebg-preview.png?alt=media&token=a2b9a609-80f9-495a-b6d2-4ab58d43c7ba"
+                         class="navbar-brand store-image img-fluid" />
+                </a>
+            </div>
+        </div
+
+        @if(carritos == null)
+        {
+
+        }
+        else
+        {
+          <div class="col-lg-7 mb-4">
+            <EditForm Model="@checkout">
+            <form id="" method="post" action="">
+                <div class="col-lg-12">
+                </div>
+                <div class="col-lg-12 leftDiv ">
+                    <div id="payment-page" class="row">
+                        <div class="col-12">
+                            <h5>Información de Orden</h5>
+                        </div>
+                        <div class="col-12">
+                            <div class="row mx-n2">
+                                <div class="col-sm-6 px-2 mb-3">
+                                    <div class="order-information-div p-3">
+                                        <div class="separatedContent">
+                                            <h6>Contacto</h6><a style="color: rgb(217, 1, 124);">Editar</a>
+                                        </div><span>@checkout.email</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="row mx-n2">
+                                <div class="col-sm-6 px-2 mb-3">
+                                    <div class="order-information-div p-3">
+                                        <div class="separatedContent">
+                                            <h6>Enviar a</h6><a rel="noopener noreferrer" class="small"
+                                                                href="/v2/checkout/information/3f0d2a48a8c3d248e9e2b14d9781e528"
+                                                                style="color: rgb(217, 1, 124);">Editar</a>
+                                        </div><span>@checkout.direccion,@checkout.ciudad-@checkout.departamento, Colombia</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 px-2 mb-3">
+                                    <div class="order-information-div p-3">
+                                        <div class="separatedContent">
+                                            <h6>Método de envío</h6>
+                                        </div><span>
+                                            ✔️ ENVIO AL COBRO / PAGARÁ AL RECIBIR SU PRODUCTO 🌀🚀&nbsp;-&nbsp;Por
+                                            pagar
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+             </EditForm>
+            <div class="row px-3" style="min-height: 200px;">
+                <div class="col-xl-8 p-3">
+                    <RadzenCard>
+                        <h4>Formas de pago</h4>
+                        <RadzenAccordion>
+                            <Items>
+                                <RadzenAccordionItem Text="Tarjeta Débito" Icon="">
+                                    <EditForm Model="@pago">
+                                          <div class="fbra__type-paymentByOtherCards childWrapper">
+                                        <section class="fbra_section fbra_cmpPaymentOptions__creditCardTabContentContainer"
+                                                 title="">
+                                            <div>
+                                                <div>
+                                                    <form>
+                                                        <div style="padding-top:10px">
+                                                            <div>
+                                                                <label>
+                                                                    <span>Nombre titular de la tarjeta</span>
+                                                                </label>
+
+                                                                <input required="" class="col-md-12" type="text"
+                                                                       maxlength="40" autocomplete="on" @bind="pago.nombre_tarjeta"
+                                                                       style="min-height:30px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out; ">
+                                                            </div>
+                                                        </div>
+                                                        <div style="padding-top:10px">
+                                                            <div>
+                                                                <div>
+                                                                    <label>
+                                                                        <span>Número de tarjeta</span>
+                                                                    </label>
+                                                                    <input required="" class="col-md-12" type="text"
+                                                                           maxlength="12" autocomplete="on" @bind="pago.numero_tarjeta"
+                                                                           placeholder="1234 XXXX XXXX XXXX" style="min-height:30px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out; ">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div style="padding-top:10px">
+                                                            <div>
+                                                                <label><span>CVV</span></label>
+                                                                <input required="" class="col-md-12" type="text"
+                                                                       minlength="3" maxlength="4" autocomplete="on" @bind="pago.cvv"
+                                                                       placeholder="123" style="min-height:30px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out; ">
+                                                            </div>
+                                                        </div>
+                                                        <div style="padding-top:10px">
+                                                            <label>Fecha de expiración</label>
+                                                            <div>
+                                                                <div class="col-md-4" style="display: inline-block">
+                                                                    <select class="select form-control" @bind="pago.mes_pago">
+                                                                        <option class="fbra_selectOption" value="">
+                                                                            Mes
+                                                                        </option>
+                                                                        <option class="fbra_selectOption" value="1">
+                                                                            01
+                                                                        </option>
+                                                                        <option class="fbra_selectOption" value="2">
+                                                                            02
+                                                                        </option>
+                                                                        <option class="fbra_selectOption" value="3">
+                                                                            03
+                                                                        </option>
+                                                                        <option class="fbra_selectOption" value="4">
+                                                                            04
+                                                                        </option>
+                                                                        <option class="fbra_selectOption" value="5">
+                                                                            05
+                                                                        </option>
+                                                                        <option class="fbra_selectOption" value="6">
+                                                                            06
+                                                                        </option>
+                                                                        <option class="fbra_selectOption" value="7">
+                                                                            07
+                                                                        </option>
+                                                                        <option class="fbra_selectOption" value="8">
+                                                                            08
+                                                                        </option>
+                                                                        <option class="fbra_selectOption" value="9">
+                                                                            09
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="10">
+                                                                            10
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="11">
+                                                                            11
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="12">
+                                                                            12
+                                                                        </option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <div class="col-md-4" style="display: inline-block">
+                                                                    <select class="select form-control" @bind="pago.año_pago">
+                                                                        <option class="fbra_selectOption" value="">
+                                                                            Año
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="2022">
+                                                                            22
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="2023">
+                                                                            23
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="2024">
+                                                                            24
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="2025">
+                                                                            25
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="2026">
+                                                                            26
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="2027">
+                                                                            27
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="2028">
+                                                                            28
+                                                                        </option>
+                                                                    </select>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </div>
+                                    </EditForm>
+                                </RadzenAccordionItem>
+                                <RadzenAccordionItem Text="Tarjeta de Crédito" Icon="">
+                                    <EditForm Model="@pago">
+                                          <div class="fbra__type-paymentByOtherCards childWrapper">
+                                        <section class="fbra_section fbra_cmpPaymentOptions__creditCardTabContentContainer"
+                                                 title="">
+                                            <div>
+                                                <div>
+                                                    <form>
+                                                        <div style="padding-top:10px">
+                                                            <div>
+                                                                <label>
+                                                                    <span>Nombre titular de la tarjeta</span>
+                                                                </label>
+
+                                                                <input required="" class="col-md-12" type="text"
+                                                                       maxlength="40" autocomplete="on" @bind="pago.nombre_tarjeta"
+                                                                       style="min-height:30px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out; ">
+                                                            </div>
+                                                        </div>
+                                                        <div style="padding-top:10px">
+                                                            <div>
+                                                                <div>
+                                                                    <label>
+                                                                        <span>Número de tarjeta</span>
+                                                                    </label>
+                                                                    <input required="" class="col-md-12" type="text"
+                                                                           maxlength="12" autocomplete="on" @bind="pago.numero_tarjeta"
+                                                                           placeholder="1234 XXXX XXXX XXXX" style="min-height:30px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out; ">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div style="padding-top:10px">
+                                                            <div>
+                                                                <label><span>CVV</span></label>
+                                                                <input required="" class="col-md-12" type="text"
+                                                                       minlength="3" maxlength="4" autocomplete="on" @bind="pago.cvv"
+                                                                       placeholder="123" style="min-height:30px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out; ">
+                                                            </div>
+                                                        </div>
+                                                        <div style="padding-top:10px">
+                                                            <label>Fecha de expiración</label>
+                                                            <div>
+                                                                <div class="col-md-4" style="display: inline-block">
+                                                                    <select class="select form-control" @bind="pago.mes_pago">
+                                                                        <option class="fbra_selectOption" value="">
+                                                                            Mes
+                                                                        </option>
+                                                                        <option class="fbra_selectOption" value="1">
+                                                                            01
+                                                                        </option>
+                                                                        <option class="fbra_selectOption" value="2">
+                                                                            02
+                                                                        </option>
+                                                                        <option class="fbra_selectOption" value="3">
+                                                                            03
+                                                                        </option>
+                                                                        <option class="fbra_selectOption" value="4">
+                                                                            04
+                                                                        </option>
+                                                                        <option class="fbra_selectOption" value="5">
+                                                                            05
+                                                                        </option>
+                                                                        <option class="fbra_selectOption" value="6">
+                                                                            06
+                                                                        </option>
+                                                                        <option class="fbra_selectOption" value="7">
+                                                                            07
+                                                                        </option>
+                                                                        <option class="fbra_selectOption" value="8">
+                                                                            08
+                                                                        </option>
+                                                                        <option class="fbra_selectOption" value="9">
+                                                                            09
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="10">
+                                                                            10
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="11">
+                                                                            11
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="12">
+                                                                            12
+                                                                        </option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <div class="col-md-4" style="display: inline-block">
+                                                                    <select class="select form-control" @bind="pago.año_pago">
+                                                                        <option class="fbra_selectOption" value="">
+                                                                            Año
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="2022">
+                                                                            22
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="2023">
+                                                                            23
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="2024">
+                                                                            24
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="2025">
+                                                                            25
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="2026">
+                                                                            26
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="2027">
+                                                                            27
+                                                                        </option>
+                                                                        <option class="fbra_selectOption"
+                                                                                value="2028">
+                                                                            28
+                                                                        </option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </div>
+                                    </EditForm>
+                                   
+                                </RadzenAccordionItem>
+                                <RadzenAccordionItem Text="Pago por Transferencias" Icon="">
+                                    <b>BANCOLOMBIA</b><br>
+                                    <b>Cuenta Ahorros</b><br>
+                                    <b>No. Cuenta:</b> <p>75735949023</p>
+                                    <b>Nombre:</b> <p>GamerTechnology</p>
+                                    <b>NIT.</b><p>1107075289</p>
+                                    <br>
+                                    <b>BANCOLOMBIA</b><br>
+                                    <b>No. Celular:</b> <p>3127498179</p>
+                                    <b>Nombre:</b> <p>Juan Felipe Yepes</p>
+                                    <b>C.C:</b> <p>1107074162</p>
+                                </RadzenAccordionItem>
+                            </Items>
+                        </RadzenAccordion>
+                    </RadzenCard>
+                </div>
+            </div>
+            </div>
+
+             <div class="col-lg-5">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="summary-header"
+                             style="align-items: center; display: flex;justify-content:space-between; padding:0.75rem 1rem 0.25rem;">
+                                <h6>Resumen del pedido</h6>
+                                <a href="/carrito" class="btn summary-btn"
+                               style="border-color:#0d6efd; color:#0d6efd; font-size:12px; text-transform:uppercase;">
+                                    Editar Carrito
+                                </a>
+                            </div>
+                            <hr />
+                            @foreach (var resumen in carritos)
+                            {
+                                subtotal = carritos.Sum(cart => cart.Cantidad * cart.Precio);
+                                descuento = subtotal / 100 * 2;
+                                total = subtotal - descuento;
+                                <div style="align-items: center; display: flex;justify-content:space-between; padding:0.75rem 1rem 0.25rem;">
+                                    <div class="col product-qty" style="height: 16px;border-radius: 8px;color: rgb(255, 255, 255); background-color: rgb(217, 1, 124);font-size: 10px;justify-content: center;max-width: 16px;min-width: 16px;padding: 0 5px;text-align: center;display: flex;flex-direction: row-reverse;">@resumen.Cantidad</div>
+                                    <span>@resumen.Nombre</span>
+                                    <b>$@string.Format("{0:#,#}",resumen.Precio) COP</b>
+                                </div>
+                            }
+                            <hr />
+                            <div>
+                                <div style="align-items: center; display: flex;justify-content:space-between; padding:0.75rem 1rem 0.25rem;">
+
+                                    <span>Total Parcial</span>
+                                    <span>$@string.Format("{0:#,#}",subtotal) COP</span>
+                                </div>
+                                <div style="align-items: center; display: flex;justify-content:space-between; padding:0.75rem 1rem 0.25rem;">
+                                    <span>Descuento</span>
+                                    <span>$-@string.Format("{0:#,#}",descuento) COP</span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div style="align-items: center; display: flex;justify-content:space-between; padding:0.75rem 1rem 0.25rem;">
+                                <b>Total</b>
+                                <b>$@string.Format("{0:#,#}",total) COP</b>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                                            <div class="col-6 mt-4">
+                                <button class="btn btn-primary"
+                                    style=" color: rgb(255, 255, 255); font-size:14px;line-height:1.5rem;width:80%;padding:1.2em;" @onclick="pagar">
+                                        PAGAR
+                                </button>
+                            </div>
+                
+        }
+        
+    </div>
+</div>
+
+
+@code {
+    Checkout checkout = new Checkout();
+    ResumenPago resumen = new ResumenPago();
+    Carrito carrito = new Carrito();
+
+    Pago pago = new Pago();
+    Detalle_compra detalle = new Detalle_compra();
+    Orden_compra orden = new Orden_compra();
+
+    private IEnumerable<Carrito> carritos;
+
+
+    public double subtotal = 0;
+    public double descuento = 0;
+    public double total = 0;
+
+
+
+    [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var user = (await authenticationStateTask).User;
+            var email_user = user.Identity.Name;
+
+            try
+            {
+                if (SignInManager.IsSignedIn(user))
+                {
+
+                    carritos = await CarritoService.GetEmail(email_user);
+                    checkout = await LocalStorage.GetItemAsync<Checkout>("datos");
+                }
+                else
+                {
+                    //carritos = await CartService.GetCartItems();
+                    checkout = await LocalStorage.GetItemAsync<Checkout>("datos");
+                    carritos = await LocalStorage.GetItemAsync<IEnumerable<Carrito>>("cart");
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            StateHasChanged();
+        }
+    }
+
+
+
+    public async Task pagar()
+    {
+
+        var user = (await authenticationStateTask).User;
+        var email_user = user.Identity.Name;
+        subtotal = carritos.Sum(cart => cart.Cantidad * cart.Precio);
+        descuento = subtotal / 100 * 2;
+        total = subtotal - descuento;
+
+        var r = new Random();
+        var generar = r.Next(10000, 90000);
+
+        if (SignInManager.IsSignedIn(user))
+        {
+
+            pago.valor_pago = total;
+            pago.numero_orden = generar;
+            await CheckoutService.InsertPago(pago);
+        await CheckoutService.InsertDetalle_Compra(detalle);
+        NavigationManager.NavigateTo("/", true);            
+        }
+
+    }
+
+}
