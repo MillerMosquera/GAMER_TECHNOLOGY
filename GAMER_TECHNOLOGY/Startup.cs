@@ -41,6 +41,8 @@ namespace GAMER_TECHNOLOGY
             
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<ICarritoService, CarritoService>();
+            services.AddScoped<IBusquedaService, BusquedaService>();
+            services.AddScoped<ICheckoutService, CheckoutService>();
             services.AddBlazoredToast();
             //Conexion DB
             var SqlConnectionConfiguration = new SqlConnectionConfiguration(Configuration.GetConnectionString("SqlDBContext"));
