@@ -76,7 +76,7 @@
 
                             <input type="submit" value="Agregar al carrito" @onclick="Save" />
 
-                            <a href="/" class="btn btn-link btn-sm" title="Continue Shopping">← Continue Shopping</a>
+                            <a href="/Articulos" class="btn btn-link btn-sm" title="Continue Shopping">← Continuar Comprando</a>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -135,8 +135,6 @@
         }
         else
         {
-            var email = user.Identity.Name;
-
             carrito.Id_articulo = articulo.IdArticulo;
             carrito.Nombre = articulo.Nombre;
             carrito.Codigo = articulo.Codigo;
@@ -144,7 +142,6 @@
             carrito.Descripcion = articulo.Descripcion;
             carrito.Categoria = articulo.Categoria;
             carrito.Imagen = articulo.Imagen;
-            carrito.Email_user = email;
 
             NavigationManager.NavigateTo("/Articulos", true);
             await CartService.AddToCart(carrito);

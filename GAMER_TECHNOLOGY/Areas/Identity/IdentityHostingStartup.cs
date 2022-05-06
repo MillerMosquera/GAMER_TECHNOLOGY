@@ -14,18 +14,21 @@ namespace GAMER_TECHNOLOGY.Areas.Identity
     {
         public void Configure(IWebHostBuilder builder)
         {
-            builder.ConfigureServices((context, services) => {
+            builder.ConfigureServices((context, services) =>
+            {
                 services.AddDbContext<GAMER_TECHNOLOGYContext>(options =>
                     options.UseSqlServer(
                         context.Configuration.GetConnectionString("SqlDBContext")));
 
-                services.AddDefaultIdentity<IdentityUser>(options => {
+                services.AddDefaultIdentity<IdentityUser>(options =>
+                {
                     options.SignIn.RequireConfirmedAccount = false;
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireDigit = false;
                     options.Password.RequireLowercase = false;
                     options.Password.RequireUppercase = false;
                 })
+                    .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<GAMER_TECHNOLOGYContext>();
             });
         }
