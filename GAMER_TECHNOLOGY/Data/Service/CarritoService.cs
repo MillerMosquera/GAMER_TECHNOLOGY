@@ -51,7 +51,7 @@ namespace GAMER_TECHNOLOGY.Data.Service
                 return resultCarrito.ToList();
             }
         }
-        //Obtener solo uno por el id
+        //Obtener solo uno por el email
         public async Task<IEnumerable<Carrito>> GetEmail(string email_user)
         {
             using (var conn = new SqlConnection(_configuration.Value))

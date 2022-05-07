@@ -2,6 +2,7 @@ using Blazored.LocalStorage;
 using Blazored.Toast;
 using GAMER_TECHNOLOGY.Areas.Identity;
 using GAMER_TECHNOLOGY.Data;
+using GAMER_TECHNOLOGY.Data.PDF;
 using GAMER_TECHNOLOGY.Data.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
@@ -41,8 +42,11 @@ namespace GAMER_TECHNOLOGY
             
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<ICarritoService, CarritoService>();
-            services.AddScoped<IBusquedaService, BusquedaService>();
-            services.AddScoped<ICheckoutService, CheckoutService>();
+            services.AddScoped<ICalificacionService, CalificacionService>();
+            services.AddScoped<ICompraService, CompraService>();
+            services.AddScoped<IDevolucionService, DevolucionService>();
+            services.AddScoped<IFacturaPDF, FacturaPDF>();
+            services.AddScoped<IDetalleFacturaService, DetalleFacturaService>();
             services.AddBlazoredToast();
             //Conexion DB
             var SqlConnectionConfiguration = new SqlConnectionConfiguration(Configuration.GetConnectionString("SqlDBContext"));

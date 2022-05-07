@@ -1,0 +1,157 @@
+﻿@page "/compras"
+
+@using Data.Model
+@using Data.Service
+@using Microsoft.AspNetCore.Components;
+@using Microsoft.AspNetCore.Identity
+@using Blazored.LocalStorage
+
+@inject IArticuloService ArticuloService
+@inject ICompraService CompraService
+@inject ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+
+<div class="container cart my-5">
+    <!-- Cart Table -->
+    <div class="row" style="display: flex;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;flex-direction: column;">
+        <div class="col-12">
+            <div class="cart-header mb-5 text-center">
+                <a href="/">
+                    <img style="max-width:15%"
+                         src="https://firebasestorage.googleapis.com/v0/b/gamertechnology-e709a.appspot.com/o/WhatsApp_Image_2022-04-03_at_11.05.13_PM-removebg-preview.png?alt=media&token=a2b9a609-80f9-495a-b6d2-4ab58d43c7ba"
+                         class="navbar-brand store-image img-fluid" />
+                </a>
+            </div>
+        </div>
+        @if (resumens == null)
+        {
+            <h4>No tiene productos</h4>
+        }
+        else
+        {
+            <div>
+                <div style="background-color: #fff;position: relative;">
+                    <h1 style="font-size: 1.8rem;line-height: 24px;line-height: 2.4rem;font-family: Lato,sans-serif;font-weight: 300;padding: 30px 15px;">Mis órdenes</h1>
+                </div>
+            </div>
+            subtotal = resumens.Sum(orden => orden.Cantidad * orden.Precio);
+            descuento = subtotal / 100 * 2;
+            total = subtotal - descuento;
+            <div style="width:100%;min-height:60px; background-color:#fff;padding:0 15px;margin:15px 0 0; border-bottom:1px dashed #e0e0e0; overflow:auto;">
+                <div style="width:50%;height:auto;float:left;">
+                    <div style="font-size:13px;line-height: 1.3rem;font-family: Lato,sans-serif; text-align:right">
+                        <span>Total: </span>
+                        <span>$@string.Format("{0:#,#}",subtotal)</span>
+                    </div>
+                </div>
+            </div>
+            foreach (var item in resumens)
+            {
+                <div class="row px-3" style="min-height: 200px;">
+                    <div class="col-xl-12">
+                        <div style="display: inline-block; margin:25px auto 0; width:100%; height:auto; background-color:#fff">
+                            <div>
+                                <div style="width:100%;">
+                                    <div style="width:100%;padding:15px 15px 0;margin:0;background-color:#fff;overflow:hidden;">
+                                        <div style="font-size:1.3rem;line-height:2.4rem; font-family:Lato,sans-serif; font-weight:300; text-align:left; position:relative;">
+                                            Despacho a domicilio
+                                        </div>
+                                        <div>
+                                            <div style=" width: 100%;height: auto;display: inline-block;margin: 10px 0 0;">
+                                                <div style="width: 75px;height: auto;border: 1px solid #e0e0e0;box-sizing: initial;float: left;position: relative;">
+                                                    <a>
+                                                        <img src="@item.Imagen" style="width:75px;height:75px"
+                                                     height="75" width="75" alt="Televisor Samsung 43 Pulgadas Smart"
+                                                     title="Televisor Samsung 43 Pulgadas Smart">
+                                                    </a>
+                                                </div>
+                                                <div style="width: calc(80% - 100px);height: auto;margin: 0 0 0 15px;float: left;text-align: left; ">
+                                                    <div style="font-size: 1.2rem;line-height: 1rem;font-family: Lato,sans-serif;font-weight: 700;color: #888;text-transform: uppercase;">
+                                                        @item.Nombre
+                                                    </div>
+                                                    <div style="overflow:auto">
+                                                        <span style="font-size:1rem;line-height: 18px;line-height: 1.8rem;font-weight: 400;color: #e4022d;">
+                                                            $@string.Format("{0:#,#}",item.Precio)
+                                                        </span>
+                                                        <span style="font-size: 0.7rem;line-height: 12px;line-height: 1.2rem;font-family: Lato,sans-serif;font-weight: 400;color: #888;display: block;">
+                                                            *Precio de referencia
+                                                        </span>
+                                                    </div>
+                                                    <span style="font-size: 0.6rem;line-height: 10px;line-height: 1rem;font-family: Lato,sans-serif;font-weight: 400;color: #888;display: block;margin-top: 5px;">
+                                                        @item.Cantidad unidad
+                                                    </span>
+                                                </div>
+                                                <div style="overflow: hidden;">
+                                                    <div style="display:block"></div>
+                                                    <div>
+                                                        <div style="overflow: hidden; float: right;">
+                                                            <div>
+                                                                <a href="/factura/@item.Id_articulo" class="btn btn-secondary"
+                                                           title="Encuentra tu factura a un click.">
+                                                                    Consulta tu factura
+                                                                </a>
+                                                            </div>
+                                                            <div style="padding-top:20px">
+                                                                <a href="/evaluar/@item.Id_articulo" class="btn btn-secondary" title="Cuando recibas tu compra podrás evaluar tu producto.">
+                                                                    Evalúa tu producto
+                                                                </a>
+                                                            </div>
+                                                            <div style="padding-top:20px">
+                                                                <a href="/devolucion/@item.Id_articulo" class="btn btn-secondary" title="Devolución de producto">
+                                                                    Devolución
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    ResumenPago resumen = new ResumenPago();
+    private IEnumerable<ResumenPago> resumens;
+    [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    public double subtotal = 0;
+    public double descuento = 0;
+    public double total = 0;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var user = (await authenticationStateTask).User;
+            var email_user = user.Identity.Name;
+
+            try
+            {
+                if (SignInManager.IsSignedIn(user))
+                {
+
+                    resumens = await CompraService.GetEmail(email_user);
+
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            StateHasChanged();
+        }
+    }
+
+}

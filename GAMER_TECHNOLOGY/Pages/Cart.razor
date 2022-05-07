@@ -15,6 +15,11 @@
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
+<<<<<<< HEAD
+@inject IJSRuntime JS
+
+=======
+>>>>>>> b47fb44dabd38b7f70f86b53c2728981128a5cd5
 <header>
     <div class="container-fluid  header-block trsn py-lg-4 py-0">
         <div class="row align-items-center no-gutters">
@@ -68,7 +73,7 @@ else
                             {
 
                                 subtotal = carritos.Sum(cart => cart.Cantidad * cart.Precio);
-                                descuento = subtotal / 100 * 5;
+                                descuento = subtotal / 100 * 2;
                                 total = subtotal - descuento;
 
                                 <tbody>
@@ -129,7 +134,8 @@ else
                                     <form action="/cart/estimate" accept-charset="UTF-8" id="estimate_shipping_form" autocomplete="off" method="post">
                                         <!-- Country -->
                                     <div class="form-group arrow">
-                                            <label for="estimate_shipping_country">País</label><select name="estimate[country]" id="estimate_shipping_country" class="select form-control">
+                                            <label for="estimate_shipping_country">País</label>
+                                            <select name="estimate[country]" id="estimate_shipping_country" class="select form-control">
                                                 <option value="CO" selected="selected">Colombia</option>
                                             </select>
                                         </div>
@@ -172,9 +178,9 @@ else
 
                         <div class="cart-actions text-center">
 
-                            <a href="/checkout" class="btn btn-primary btn-block" title="Proceder al Pago" id="proceed_to_checkout">Proceder al Pago</a>
+                            <a class="btn btn-primary btn-block" title="Proceder al Pago" id="proceed_to_checkout" @onclick="pagar">Proceder al Pago</a>
 
-                            <a href="/" class="continue small mt-2 d-block" title="← Continúa Comprando">← Continúa Comprando</a>
+                            <a href="/Articulos" class="continue small mt-2 d-block" title="← Continúa Comprando">← Continúa Comprando</a>
                         </div>
                     </div>
                 </div>
@@ -238,6 +244,22 @@ else
             NavigationManager.NavigateTo("/carrito", true);
             await CartService.DeleteItem(cart);
         }
+    }
+
+    public async Task pagar()
+    {
+        var user = (await authenticationStateTask).User;
+        var email_user = user.Identity.Name;
+
+        if (SignInManager.IsSignedIn(user))
+        {
+            NavigationManager.NavigateTo("/checkout", true);
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+
     }
 
 }
