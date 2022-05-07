@@ -51,7 +51,7 @@ namespace GAMER_TECHNOLOGY.Data.Service
                 return resultCarrito.ToList();
             }
         }
-        //Obtener solo uno por el id
+        //Obtener solo uno por el email
         public async Task<IEnumerable<Carrito>> GetEmail(string email_user)
         {
             using (var conn = new SqlConnection(_configuration.Value))
@@ -76,12 +76,13 @@ namespace GAMER_TECHNOLOGY.Data.Service
                 parameters.Add("Categoria", carrito.Categoria, DbType.String);
                 parameters.Add("Precio", carrito.Precio, DbType.Double);
                 parameters.Add("Cantidad", carrito.Cantidad, DbType.Int32);
+                parameters.Add("Marca", carrito.Marca, DbType.String);
                 
 
-                const string UpdateCart = @"UPDATE dbo.Carrito SET Id_articulo = @Id_articulo, Codigo = @Codigo, Nombre = @Nombre, Descripcion = @Descripcion, Imagen = @Imagen, Categoria = @Categoria, Precio = @Precio, Cantidad = @Cantidad" +
+                const string UpdateCart = @"UPDATE dbo.Carrito SET Id_articulo = @Id_articulo, Codigo = @Codigo, Nombre = @Nombre, Descripcion = @Descripcion, Imagen = @Imagen, Categoria = @Categoria, Precio = @Precio, Cantidad = @Cantidad Marca = @Marca" +
                 "WHERE Id_articulo = @Id_articulo";
 
-                await conn.ExecuteAsync(UpdateCart, new { carrito.Id_articulo, carrito.Codigo, carrito.Nombre, carrito.Descripcion, carrito.Imagen, carrito.Categoria, carrito.Precio, carrito.Cantidad });
+                await conn.ExecuteAsync(UpdateCart, new { carrito.Id_articulo, carrito.Codigo, carrito.Nombre, carrito.Descripcion, carrito.Imagen, carrito.Categoria, carrito.Precio, carrito.Cantidad,carrito.Marca });
             }
         }
 
@@ -92,6 +93,15 @@ namespace GAMER_TECHNOLOGY.Data.Service
                 const string DeleteCart = @"DELETE FROM dbo.Carrito WHERE Id_articulo = @Id_articulo";
 
                 await conn.ExecuteAsync(DeleteCart, new { cart.Id_articulo});
+            }
+        }
+        public async Task DeleteAll(string email_user)
+        {
+            using (var conn = new SqlConnection(_configuration.Value))
+            {
+                const string DeleteAll = @"DELETE FROM dbo.Carrito WHERE email_user = @email_user";
+
+                await conn.ExecuteAsync(DeleteAll, new { email_user = email_user });
             }
         }
     }

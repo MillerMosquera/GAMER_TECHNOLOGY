@@ -11,6 +11,7 @@
         public double Precio { get; set; }
         public int Cantidad { get; set; }
         public string Email_user { get;  set; }
+        public string Marca { get; set; }
 
     }
 }

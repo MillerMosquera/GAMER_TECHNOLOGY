@@ -11,5 +11,6 @@ namespace GAMER_TECHNOLOGY.Data.Service
         Task<IEnumerable<Carrito>> GetEmail(string email_user);
         Task InsertCarrito(Carrito carrito);
         Task UpdateArticulo(Carrito carrito);
+        Task DeleteAll(string email_user);
     }
 }

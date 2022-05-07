@@ -49,6 +49,16 @@ namespace GAMER_TECHNOLOGY.Data.Service
                 return resultArticulos.ToList();
             }
         }
+        //Obtener todos los datos
+        public async Task<IEnumerable<Articulo>> GetAllS()
+        {
+            using (var conn = new SqlConnection(_configuration.Value))
+            {
+                const string SelectArticulo = @"SELECT* FROM dbo.Articulo ORDER BY NEWID()";
+                var resultArticulos = await conn.QueryAsync<Articulo>(SelectArticulo);
+                return resultArticulos.ToList();
+            }
+        }
         //Obtener solo uno por el id
         public async Task<Articulo> GetId(int IdArticulo)
         {

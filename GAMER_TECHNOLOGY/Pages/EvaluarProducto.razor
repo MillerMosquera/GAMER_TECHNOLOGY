@@ -1,0 +1,159 @@
+﻿@page "/evaluar/{Id_articulo:int}"
+
+
+@using Data.Model
+@using Data.Service
+
+@inject ICompraService CompraService
+@inject ICalificacionService CalificacionService
+
+<h3>EvaluarProducto</h3>
+        <div class="container cart my-5">
+                    <!-- Cart Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="cart-header mb-5 text-center">
+                    <a href="/">
+                        <img style="max-width:15%"
+                            src="https://firebasestorage.googleapis.com/v0/b/gamertechnology-e709a.appspot.com/o/WhatsApp_Image_2022-04-03_at_11.05.13_PM-removebg-preview.png?alt=media&token=a2b9a609-80f9-495a-b6d2-4ab58d43c7ba"
+                            class="navbar-brand store-image img-fluid" />
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-12 mb-4">
+                <div class="wt-reviews">
+                    <div class="wt-reviews__title">
+                        <h1>Evalúa tu producto</h1>
+                        <p class="wt-reviews__title__paragraph">Porque tu opinión nos importa, te invitamos a evaluar y
+                            contarnos tu
+                            experiencia con los productos que compraste. Anímate y deja tus comentarios porque así
+                            ayudarás a otros
+                            clientes en su decisión de compra.</p>
+                    </div>
+                    <div class="wt-reviews__order col-lg-12" style="display:inline-block; margin:0 0 40px,">
+                        <div class="wt-reviews__order__container"
+                            style="    width: 100%;padding: 15px;margin: 25px 0 0;display: inline-block;background-color: #fff;">
+                    <EditForm Model="@resumen">
+                            <div class="wt-reviews__order__products"
+                                style=" width: 100%;height: auto;display: inline-block;margin: 10px 0 0;">
+                                <div class="wt-reviews__order__products__image"
+                                    style="    border: 1px solid #e0e0e0;box-sizing: initial;float: left;">
+                                    <img src="@resumen.Imagen" style="width:75px;height:75px"
+                                        height="75" width="75" alt="Audífonos Haylou Gt1 Plus Bluetooth"
+                                        title="Audífonos Haylou Gt1 Plus Bluetooth">
+                                </div>
+                                <div class="wt-reviews__order__products__data"
+                                    style="width: calc(100% - 100px);height: auto;margin: 0 0 0 15px;float: left;text-align: left;">
+                                    <div class="wt-reviews__order__products__data__brand"
+                                        style="font-size: 12px;font-size: 1.2rem;line-height: 16px;line-height: 1.6rem;font-family: Lato,sans-serif;font-weight: 700;color: #888;text-transform: uppercase;">
+                                        @resumen.Nombre</div>
+                                </div>
+                            </div>
+                                </EditForm>
+                            <div>
+                                <form class="wt-add-a-review__form"
+                                    style="display: -webkit-flex;display: flex;-webkit-flex-direction: column;flex-direction: column;">
+                                    <div class="wt-form__input-row wt-add-a-review__overall-rating"
+                                        style="margin: 20px 0 30px;">
+                                        <div class="wt-rating-stars-interactive wt-rating-stars">
+                                            <div class="wt-rating-stars-interactive__star-title"
+                                                style="position: relative;width: 100%;border: 0;padding: 0;margin: 0;">
+                                                De 1 a 5 ¿Cuántas estrellas le otorgas?
+                                            </div>
+                                            <div class="rating" style="    border: none;float: left;margin-left: 5px;">
+                                                <form>
+                                                    <p class="clasificacion"
+                                                        style="direction: rtl;unicode-bidi: bidi-override;">
+                                                        <input id="radio1" type="radio" name="estrellas" value="5"
+                                                            style="display:none">
+                                                        <!--
+                                                    --><label class="star" for="radio1"
+                                                            style="color:grey; font-size:2.7rem;">★</label>
+                                                        <!--
+                                                    --><input id="radio2" type="radio" name="estrellas" value="4"
+                                                            style="display:none">
+                                                        <!--
+                                                    --><label class="star" for="radio2"
+                                                            style="color:grey; font-size: 2.7rem;">★</label>
+                                                        <!--
+                                                    --><input id="radio3" type="radio" name="estrellas" value="3"
+                                                            style="display:none">
+                                                        <!--
+                                                    --><label class="star" for="radio3"
+                                                            style="color:grey; font-size: 2.7rem;">★</label>
+                                                        <!--
+                                                    --><input id="radio4" type="radio" name="estrellas" value="2"
+                                                            style="display:none">
+                                                        <!--
+                                                    --><label class="star" for="radio4"
+                                                            style="color:grey; font-size: 2.7rem;">★</label>
+                                                        <!--
+                                                    --><input id="radio5" type="radio" name="estrellas" value="1"
+                                                            style="display:none">
+                                                        <!--
+                                                    --><label class="star" for="radio5"
+                                                            style="color:grey; font-size: 2.7rem;">★</label>
+                                                    </p>
+                                                </form>
+                                    
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="display:block;margin:20px 0 0;">
+                                        <EditForm Model="@califi">
+                                        <div>
+                                            <label>Describe tu
+                                                experiencia con este producto
+                                                (opcional)
+                                            </label>
+                                            <input @bind="califi.comentario" 
+                                                style="font-size: 1.5rem;line-height: 2.1rem;-webkit-appearance: none;-moz-appearance: none;appearance: none;border: 0;border-radius: 0;border-bottom: 1px solid #bbb;max-width: 100%;min-width: 100%;outline: none;padding: 7px 0;"></input>
+                                            <p class="wt-input-error-msg"></p>
+                                        </div>
+                                             <div>
+                                            <label
+                                                style="font-size: 14px;font-size: 1.4rem;line-height: 21px;line-height: 2.1rem;font-family: Lato,sans-serif;display: block;margin-bottom: 10px;">
+                                                Nombre
+                                            </label>
+                                            <input type="text" required="" @bind="@califi.nombre"
+                                                style="font-size: 15px;font-size: 1.5rem;line-height: 21px;line-height: 2.1rem;-webkit-appearance: none;-moz-appearance: none;appearance: none;border: 0;border-radius: 0;border-bottom: 1px solid #bbb;max-width: 100%;min-width: 100%;outline: none;padding: 7px 0;">
+                                        </div>
+                                        <div
+                                             style="display: flex;font-family: Lato,sans-serif;font-weight: 300;font-size: 20px;font-size: 2rem;line-height: 24px;line-height: 2.4rem;margin-bottom: 20px;align-items: center;align-content: center;flex-wrap: nowrap;flex-direction: column;padding-top: 30px;">
+                                            <button type="submit" class="btn btn-primary" @onclick="enviar">Publicar Reseña
+                                            </button>
+                                        </div>
+                                        <a href="/compra" style="display: flex;font-family: Lato,sans-serif;font-weight: 300;font-size: 20px;font-size: 1.4rem;line-height: 24px;line-height: 2.4rem;margin-bottom: 20px;align-items: center;align-content: center;flex-wrap: nowrap;flex-direction: column;padding-top: 30px;">Cancelar</a>
+                                        </EditForm>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     
+@code {
+
+    [Parameter]
+    public int Id_articulo { get; set; }
+
+    ResumenPago resumen = new ResumenPago();
+    Calificacion califi = new Calificacion();
+
+    protected override async Task OnInitializedAsync()
+    {
+        //resumen = await CompraService.GetId(Id_articulo);
+
+    }
+
+    public async Task enviar()
+    {
+        califi.id_articulo = Id_articulo;
+        await CalificacionService.InsertCalif(califi);
+    }
+
+}

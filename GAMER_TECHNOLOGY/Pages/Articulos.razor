@@ -2,15 +2,20 @@
 @using Data.Model
 @using Data.Service
 @using Microsoft.AspNetCore.Components;
+@using System.IO;
+@using GAMER_TECHNOLOGY.Data.FileUtils
+
+@inject IExcelService ExcelService
+@inject Microsoft.JSInterop.IJSRuntime JS
 
 @inject IArticuloService ArticuloService
-@inject IBusquedaService BusquedaService
 @inject NavigationManager NavigationManager
+@inject IBusquedaService BusquedaService
 
 
 <header>
     <div class="container-fluid  header-block trsn py-lg-4 py-0">
-        <div class="row align-items-center no-gutters">
+        <div class="row align-items-center no-gutters"> 
             <div class="col-sm-12 text-center">
                 <a href="/">
                     <img style="max-width:15%" src="https://firebasestorage.googleapis.com/v0/b/gamertechnology-e709a.appspot.com/o/WhatsApp_Image_2022-04-03_at_11.05.13_PM-removebg-preview.png?alt=media&token=a2b9a609-80f9-495a-b6d2-4ab58d43c7ba" class="navbar-brand store-image img-fluid" />
@@ -48,6 +53,11 @@
         </div>
     </nav>
 </div>
+
+<div>
+    <button @onclick="generarCSV">Descargar catalogo</button>
+</div>
+
 <div style="display:flex; justify-content:center;align-content:center">
     <div class="input-group col-md-6">
         <input @bind="busqueda" type="text" placeholder="Buscar producto" class="form-control mr-sm-2" />
@@ -56,6 +66,7 @@
         </span>
     </div>
 </div>
+
 @if (articulos == null)
 {
     <p><em>Loading...</em></p>
@@ -79,7 +90,7 @@ else
 
                         <div class="list-price">
 
-                            <span class="product-block-normal">$@string.Format("{0:#,#}", item.Precio) COP</span>
+                            <span class="product-block-normal">$@string.Format("{0:#,#}",item.Precio) COP</span>
 
                         </div>
 
@@ -94,8 +105,9 @@ else
 
 @code {
 
-
+    MemoryStream excelStream;
     private IEnumerable<Articulo> articulos;
+
     private string busqueda { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -110,8 +122,23 @@ else
         }
     }
 
-    public async Task Buscar()
+    protected async Task Buscar()
     {
-        articulos = await BusquedaService.GetBusqueda(busqueda);
+        if(busqueda != null)
+        {
+            articulos = await BusquedaService.GetBusqueda(busqueda);
+        }
+        else
+        {
+            articulos = await ArticuloService.GetAll();
+        }
+    }
+
+    public async Task generarCSV()
+    {
+        articulos = await ArticuloService.GetAllS();
+        excelStream = ExcelService.CreateExcel(articulos);
+        await JS.SaveAs("Catalogo.xlsx", excelStream.ToArray());
+      
     }
 }

@@ -1,0 +1,148 @@
+﻿@page "/devolucion/{Id_articulo:int}"
+
+
+@using Data.Model
+@using Data.Service
+@using Microsoft.AspNetCore.Components;
+@using Microsoft.AspNetCore.Identity
+
+@inject ICompraService CompraService
+@inject ICheckoutService CheckoutService
+@inject IDevolucionService DevolucionService
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@inject NavigationManager NavigationManager
+
+<div class="container cart my-5">
+    <!-- Cart Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="cart-header mb-5 text-center">
+                <a href="/">
+                    <img style="max-width:15%" src="https://firebasestorage.googleapis.com/v0/b/gamertechnology-e709a.appspot.com/o/WhatsApp_Image_2022-04-03_at_11.05.13_PM-removebg-preview.png?alt=media&token=a2b9a609-80f9-495a-b6d2-4ab58d43c7ba" class="navbar-brand store-image img-fluid" />
+                </a>
+            </div>
+        </div>
+       
+        <div class="card-body">
+             <EditForm Model="@resumen">
+            <div class="col-lg-3 col-6 px-md-2 px-1">
+                <div class="product-block text-center mb-md-3 mb-2 p-md-3 p-2 rounded trsn" style="border:1px solid #f1f1f1">
+                    <a href="/PageArticulo/IdArticulo" class="product-image d-block ">
+                        <img class="img-portfolio img-hover mb-2" src="@resumen.Imagen" style="max-width: 80%" alt="Nombre">
+                    </a>
+                    <div class="caption">
+                        <div class="brand-name small trsn">
+                            <h5><a ></a>@resumen.Nombre</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </EditForm>
+            <div class="col-lg-8 mb-4">
+                <form id="" method="post" action="">
+                    <div class="col-12">
+                        <div class="separatedContent">
+                            <br />
+                            <h4><strong>Formulario de Devolucion</strong></h4>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="col-12">
+                        <label for="comment">Motivo de la Devolucion:</label>
+                        <div class="row">
+                            <div class="col-sm-6 px-3 form-group">
+                                <div class="floating-label-wrap ">
+                                    <EditForm Model="@devolucion">
+
+                                    <input type="text" required="" class="col-md-12" placeholder=""
+                                           autocomplete="given-name" @bind="@devolucion.motivo"
+                                           style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out; ">
+                                    </EditForm>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container mt-3">
+                            <h4><strong>¿Cómo debes alistar el producto?</strong></h4>
+                            <p>
+                                Con el fin de conservar el buen estado de tus productos, es necesario que sigas estas indicaciones al momento de prepararlos para la devolución.<br />
+                                - En caso de que la devolución sea por más de un producto, debes empacarlos todos en una misma caja/bolsa.<br />
+                                - Siempre debes utilizar el embalaje en el que recibiste el producto, ya sea una caja o una bolsa plástica.<br />
+                                <br />
+                                Recuerda que debes colocar en el empaque un rotulo con la siguiente información:<br />
+                            </p>
+                        </div>
+                       
+                             <div class="container mt-3">
+                            <table class="table table-bordered">
+                                <tr></tr>
+                                <tbody>
+                                    <tr>
+                                        <td>De:  </td>
+                                        <td>Para: Gamertechnology </td>
+                                    </tr>
+                                    <tr>
+                                        <td>numero celular</td>
+                                        <td>Direccion: Av.5N # 25AN-00, Local 23</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Direccion </td>
+                                        <td>Telefono: 320 333 00 00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                       
+                        <div class="col-6 mt-4">
+                            <button class="btn btn-primary" @onclick="enviar"
+                                    style=" color: rgb(255, 255, 255); font-size:14px;line-height:1.5rem;width:80%;padding:1.2em;">
+                                Enviar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public int Id_articulo { get; set; }
+
+    ResumenPago resumen = new ResumenPago();
+    Checkout checkout = new Checkout();
+    Devolucion devolucion = new Devolucion();
+
+    [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await authenticationStateTask).User;
+        var email_user = user.Identity.Name;
+
+        if (SignInManager.IsSignedIn(user))
+        {
+            //resumen = await CompraService.GetId(Id_articulo);
+        }
+
+    }
+
+    public async Task enviar()
+    {
+        var user = (await authenticationStateTask).User;
+        var email_user = user.Identity.Name;
+
+        if (SignInManager.IsSignedIn(user))
+        {
+            devolucion.id_articulo = Id_articulo;
+            devolucion.email_user = email_user;
+            NavigationManager.NavigateTo("/", true);
+            await DevolucionService.InsertDevolucion(devolucion);
+        }
+        
+    }
+}

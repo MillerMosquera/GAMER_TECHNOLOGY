@@ -9,6 +9,7 @@ namespace GAMER_TECHNOLOGY.Data.Service
     {
         Task Delete(int id);
         Task<IEnumerable<Articulo>> GetAll();
+        Task<IEnumerable<Articulo>> GetAllS();
         Task<Articulo> GetId(int IdArticulo);
         Task InsertArt(Articulo articulo);
 

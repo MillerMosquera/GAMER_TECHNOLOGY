@@ -1,0 +1,118 @@
+﻿@page "/confirmar"
+
+@using MailKit;
+@using MimeKit;
+@using System.Net.Mail;
+@using System.Configuration;
+@using System.Net;
+@using System.Security.Cryptography.X509Certificates;
+@using System.Net.Security;
+@using Data.Model
+@using Data.Service
+@using Data.PDF
+
+@using Microsoft.AspNetCore.Components;
+@using Microsoft.AspNetCore.Identity
+@using Blazored.LocalStorage
+
+@inject IFacturaPDF FacturaPDF
+@inject IDetalleFacturaService DetalleFactura
+@inject NavigationManager NavigationManager
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@inject ICompraService CompraService
+
+
+<div class="container cart my-5">
+    <!-- Cart Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="cart-header mb-5 text-center">
+                <a href="/">
+                    <img style="max-width:15%"
+                         src="https://firebasestorage.googleapis.com/v0/b/gamertechnology-e709a.appspot.com/o/WhatsApp_Image_2022-04-03_at_11.05.13_PM-removebg-preview.png?alt=media&token=a2b9a609-80f9-495a-b6d2-4ab58d43c7ba"
+                         class="navbar-brand store-image img-fluid" />
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-4">
+            <div class="page-wrapper wt-main__wrapper" style="margin: 0 auto;max-width: 1280px;width: 100%;font-size: 16px;font-size: 1.6rem;line-height: 24px;line-height: 2.4rem;padding: 0 0 40px;">
+                <div class="wt-documents" syle="width: 100%;height: auto;padding: 30px 0;margin: 60px auto;">
+                    <div class="wt-documents__title" style="background-color: #fff;position: relative;padding: 15px 20px;">
+                        <a href="/compras" target="_top"
+                           class="wt-documents__title__link" style="color: #888;font-size: 16px;font-weight: 300;line-height: 19px;text-align: right;display: block;margin: 20px 0 40px;">Volver a mis órdenes</a>
+                        <h1 style=" font-size: 1.7rem;line-height: 2.4rem;color: #363636;letter-spacing: -.21px;line-height: 30px;">Tus documentos</h1>
+                        <p class="wt-documents__title__paragraph"
+                           style="font-family: Lato,sans-serif;font-weight: 300;font-size: 1.1rem;line-height: 24px;line-height: 2.4rem;margin-top: 10px;">Encuentra aquí tu factura a un click.</p>
+                    </div>
+                    <div class="wt-documents__list" style="background-color: #fff;padding: 15px 20px;">
+                        <hr class="wt-documents__list__separator" style="border: 0;border-bottom: 0.92px solid #e0e0e0;">
+                        <div class="wt-documents__list__item" style="background-color: #fff;text-align: center;margin-top: 30px;margin-bottom: 10px;display: inline-block;width: 100%;">
+                            <div class="wt-documents__list__item__icon"
+                                 style="background-color: #fff;text-align: center;margin-top: 30px;margin-bottom: 10px;display: inline-block;width: 100%;">
+                                <svg width="87" height="63">
+                                    <g fill="none" fill-rule="evenodd">
+                                        <path stroke="#3B3B3B" stroke-width="2" fill-rule="nonzero" d="M1 1h85v58H1z"></path>
+                                        <path fill="#3B3B3B" fill-rule="nonzero"
+                                              d="M10 9h67v2H10zM10 16h67v2H10zM10 26h33v2H10zM10 33h33v2H10z"></path><text font-family="Lato-Regular, Lato" font-size="20" letter-spacing="-0.167" fill="#363636">
+                                            <tspan x="58.283" y="43">$</tspan>
+                                        </text>
+                                    </g>
+                                </svg>
+                            </div>
+                            <h2 class="wt-documents__list__item__title"
+                                style="font-family: Lato,sans-serif;font-weight: 300;font-size: 20px;font-size: 2rem;line-height: 24px;line-height: 2.4rem;margin-bottom: 20px;">
+                                Factura
+                            </h2>
+                            <button @onclick="enviar">Enviar al correo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@code {
+
+    [Parameter]
+    public int Id_Articulo { get; set; }
+
+    Pago pago = new Pago();
+    private IEnumerable<Detalle_venta> detalle_Ventas;
+
+    IEnumerable<Checkout> checkout;
+    IEnumerable<Detalle_venta> detalleFactura;
+    [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    async Task enviar()
+    {
+        var user = (await authenticationStateTask).User;
+        var email_user = user.Identity.Name;
+
+        if (SignInManager.IsSignedIn(user))
+        {
+            //La envia
+            MailMessage correo = new MailMessage();
+            correo.From = new MailAddress("jfelipeh92@gmail.com", "JUAN HERNANDEZ", System.Text.Encoding.UTF8);//Correo de salida
+            correo.To.Add(email_user); //Correo destino?
+            correo.Subject = "FACTURA"; //Asunto
+            correo.Body = "<b>Información detallada de su factura</b>"; //Mensaje del correo
+            correo.IsBodyHtml = true;
+            correo.Priority = MailPriority.Normal;
+            SmtpClient smtp = new SmtpClient();
+            smtp.UseDefaultCredentials = false;
+            smtp.Host = "smtp.gmail.com"; //Host del servidor de correo
+            smtp.Port = 25; //Puerto de salida
+            smtp.Credentials = new System.Net.NetworkCredential("jfelipeh92@gmail.com", "finder1992");//Cuenta de correo
+            ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
+            smtp.EnableSsl = true;//True si el servidor de correo permite ssl
+            correo.Attachments.Add(new Attachment("wwwroot/FilePdf/Factura.pdf"));
+            smtp.Send(correo);
+            NavigationManager.NavigateTo("/");
+        }
+
+    }
+
+}
