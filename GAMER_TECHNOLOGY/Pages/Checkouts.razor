@@ -1,0 +1,266 @@
+﻿@page "/checkout"
+
+@using Data.Model
+@using Data.Service
+@using Microsoft.AspNetCore.Components;
+@using Microsoft.AspNetCore.Identity
+@using Blazored.LocalStorage
+@using System.Text.Json;
+@using Newtonsoft.Json.Serialization
+
+@inject ILocalStorageService LocalStorage
+@inject ICarritoService CarritoService
+@inject ICartService CartService
+@inject IArticuloService ArticuloService
+@inject ICheckoutService CheckoutService
+
+
+@inject NavigationManager NavigationManager
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+
+<header>
+    <div class="container-fluid  header-block trsn py-lg-4 py-0">
+        <div class="row align-items-center no-gutters">
+            <div class="col-sm-12 text-center">
+            </div>
+        </div>
+    </div>
+</header>
+
+@if (carritos == null)
+{
+
+}
+else
+{
+
+
+    <div class="container cart my-5">
+        <!-- Cart Table -->
+    <EditForm Model="@checkout">
+            <div class="row">
+                <div class="col-12">
+                    <div class="cart-header mb-5 text-center">
+                        <a href="/">
+                            <img style="max-width:15%" src="https://firebasestorage.googleapis.com/v0/b/gamertechnology-e709a.appspot.com/o/WhatsApp_Image_2022-04-03_at_11.05.13_PM-removebg-preview.png?alt=media&token=a2b9a609-80f9-495a-b6d2-4ab58d43c7ba" class="navbar-brand store-image img-fluid" />
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-7 mb-4">
+                    <h5>Información de contacto</h5>
+                    <form id="" method="post" action="">
+                        <div class="table-responsive">
+                            <input type="text" required="campo requerido" class="col-md-12" name="email" placeholder="E-mail" @bind="checkout.email"
+                               style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out; ">
+                            <br><br />
+                            <input type="text" requerid="" class="col-md-12" name="numero" placeholder="Numero Celular"
+                               @bind="checkout.numero_celular"
+                               style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out; ">
+                        </div>
+
+                        <div class="col-12">
+                            <div class="separatedContent">
+                                <br />
+                                <h5>Información del Envío</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-sm-6 px-3 form-group">
+                                    <div class="floating-label-wrap ">
+                                        <input type="text" required="" class="col-md-12" id="name" placeholder="Nombre"
+                                           autocomplete="given-name" @bind="checkout.nombre"
+                                           style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out; ">
+                                    </div>
+                                    <br />
+                                </div>
+                                <div class="col-sm-6 px-3 form-group">
+                                    <div class="floating-label-wrap ">
+                                        <input type="text" required="" class="col-md-12" id="surname" placeholder="Apellido"
+                                           autocomplete="family-name" @bind="checkout.apellido"
+                                           style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out;">
+                                    </div>
+                                </div>
+                                <div class="col-12 px-3 form-group">
+                                    <div class="floating-label-wrap ">
+                                        <input type="text" required="" class="col-md-12" id="address"
+                                           placeholder="Dirección" autocomplete="street-address" @bind="checkout.direccion"
+                                           style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out; ">
+                                    </div>
+                                    <br />
+                                </div>
+                                <div class="col-12 px-3 form-group">
+                                    <div class="floating-label-wrap ">
+                                        <input required="" type="text" class="col-md-12" id="complement"
+                                           placeholder="Apartamento, casa, puerta, etc. (opcional)" @bind="checkout.apartamento"
+                                           style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out; ">
+                                    </div>
+                                    <br />
+                                </div>
+                                <div class="col-sm-6 px-3 form-group">
+                                    <div class="floating-label-wrap ">
+                                        <input required="" type="text" class="col-md-12" id="complement"
+                                           placeholder="Departamento" @bind="checkout.departamento"
+                                           style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out; " />
+
+                                    </div>
+                                    <br />
+                                </div>
+                                <div class="col-sm-6 px-3 form-group">
+                                    <div class="floating-label-wrap ">
+                                        <input required="" type="text" class="col-md-12" id="complement"
+                                           placeholder="Ciudad" @bind="checkout.ciudad"
+                                           style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out; " />
+
+                                    </div>
+                                    <br />
+                                </div>
+
+
+                            </div>
+                            <div class="col-6 mt-4">
+                                <button class="btn btn-primary"
+                                    style=" color: rgb(255, 255, 255); font-size:14px;line-height:1.5rem;width:80%;padding:1.2em;" @onclick="envio">
+                                    Ir a Envío
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+
+                <div class="col-lg-5">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="summary-header"
+                             style="align-items: center; display: flex;justify-content:space-between; padding:0.75rem 1rem 0.25rem;">
+                                <h6>Resumen del pedido</h6>
+                                <a href="/carrito" class="btn summary-btn"
+                               style="border-color:#0d6efd; color:#0d6efd; font-size:12px; text-transform:uppercase;">
+                                    Editar Carrito
+                                </a>
+                            </div>
+                            <hr />
+                            @foreach (var resumen in carritos)
+                            {
+                                subtotal = carritos.Sum(cart => cart.Cantidad * cart.Precio);
+                                descuento = subtotal / 100 * 2;
+                                total = subtotal - descuento;
+                                <div style="align-items: center; display: flex;justify-content:space-between; padding:0.75rem 1rem 0.25rem;">
+                                    <div class="col product-qty" style="height: 16px;border-radius: 8px;color: rgb(255, 255, 255); background-color: rgb(217, 1, 124);font-size: 10px;justify-content: center;max-width: 16px;min-width: 16px;padding: 0 5px;text-align: center;display: flex;flex-direction: row-reverse;">@resumen.Cantidad</div>
+                                    <span>@resumen.Nombre</span>
+                                    <b>$@string.Format("{0:#,#}",resumen.Precio) COP</b>
+                                </div>
+                            }
+                            <hr />
+                            <div>
+                                <div style="align-items: center; display: flex;justify-content:space-between; padding:0.75rem 1rem 0.25rem;">
+
+                                    <span>Total Parcial</span>
+                                    <span>$@string.Format("{0:#,#}",subtotal) COP</span>
+                                </div>
+                                <div style="align-items: center; display: flex;justify-content:space-between; padding:0.75rem 1rem 0.25rem;">
+                                    <span>Descuento</span>
+                                    <span>$-@string.Format("{0:#,#}",descuento) COP</span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div style="align-items: center; display: flex;justify-content:space-between; padding:0.75rem 1rem 0.25rem;">
+                                <b>Total</b>
+                                <b>$@string.Format("{0:#,#}",total) COP</b>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </EditForm>
+    </div>
+}
+
+
+
+
+@code {
+    Checkout checkout = new Checkout();
+    ResumenPago resumen = new ResumenPago();
+    Carrito carrito = new Carrito();
+
+    private IEnumerable<Carrito> carritos;
+
+    public double subtotal = 0;
+    public double descuento = 0;
+    public double total = 0;
+
+
+
+    [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var user = (await authenticationStateTask).User;
+            var email_user = user.Identity.Name;
+
+            try
+            {
+                if (SignInManager.IsSignedIn(user))
+                {
+
+                    carritos = await CarritoService.GetEmail(email_user);                    
+
+                }
+                else
+                {
+                    //carritos = await CartService.GetCartItems();
+                    carritos = await LocalStorage.GetItemAsync<IEnumerable<Carrito>>("cart");
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            StateHasChanged();
+        }
+    }
+
+    public async void envio()
+    {
+        var user = (await authenticationStateTask).User;
+        var email_user = user.Identity.Name;
+
+        try
+        {
+            if (SignInManager.IsSignedIn(user))
+            {
+                NavigationManager.NavigateTo("/formapago",true);
+
+                await CheckoutService.InsertCarrito(resumen);
+                await CheckoutService.InsertCheckout(checkout);
+
+            }
+            else
+            {
+                if(checkout.email == null)
+                {
+                    NavigationManager.NavigateTo("/checkout", true);
+                }
+                else
+                {
+                    NavigationManager.NavigateTo("/formapago", true);
+                    await LocalStorage.SetItemAsync<Checkout>("datos" ,checkout);
+                }
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+}
