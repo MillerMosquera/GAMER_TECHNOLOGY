@@ -1,5 +1,6 @@
 ﻿@page "/checkout"
 
+
 @using Data.Model
 @using Data.Service
 @using Microsoft.AspNetCore.Components;
@@ -40,7 +41,7 @@ else
 
     <div class="container cart my-5">
         <!-- Cart Table -->
-    <EditForm Model="@checkout">
+    <EditForm Model=@checkout>
             <div class="row">
                 <div class="col-12">
                     <div class="cart-header mb-5 text-center">
@@ -50,16 +51,7 @@ else
                     </div>
                 </div>
                 <div class="col-lg-7 mb-4">
-                    <h5>Información de contacto</h5>
                     <form id="" method="post" action="">
-                        <div class="table-responsive">
-                            <input type="text" required="campo requerido" class="col-md-12" name="email" placeholder="E-mail" @bind="checkout.email"
-                               style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out; ">
-                            <br><br />
-                            <input type="text" requerid="" class="col-md-12" name="numero" placeholder="Numero Celular"
-                               @bind="checkout.numero_celular"
-                               style="min-height:50px; border-radius: 5px;border: 1px solid rgba(0,0,0,.25); color:rgba(0,0,0,.75); transition:border-color .55s ease-in-out; ">
-                        </div>
 
                         <div class="col-12">
                             <div class="separatedContent">
@@ -188,7 +180,6 @@ else
 
 @code {
     Checkout checkout = new Checkout();
-    ResumenPago resumen = new ResumenPago();
     Carrito carrito = new Carrito();
 
     private IEnumerable<Carrito> carritos;
@@ -241,22 +232,11 @@ else
             {
                 NavigationManager.NavigateTo("/formapago",true);
 
-                await CheckoutService.InsertCarrito(resumen);
+                checkout.email_user = email_user; 
                 await CheckoutService.InsertCheckout(checkout);
 
             }
-            else
-            {
-                if(checkout.email == null)
-                {
-                    NavigationManager.NavigateTo("/checkout", true);
-                }
-                else
-                {
-                    NavigationManager.NavigateTo("/formapago", true);
-                    await LocalStorage.SetItemAsync<Checkout>("datos" ,checkout);
-                }
-            }
+            
         }
         catch (Exception)
         {

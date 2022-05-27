@@ -46,7 +46,13 @@ namespace GAMER_TECHNOLOGY
             services.AddScoped<ICompraService, CompraService>();
             services.AddScoped<IDevolucionService, DevolucionService>();
             services.AddScoped<IFacturaPDF, FacturaPDF>();
+            services.AddScoped<IReportePDF, ReportePDF>();
+            services.AddScoped<IExcelService, ExcelService>();
+            services.AddScoped<IDetalleReporteService, DetalleReporteService>();
             services.AddScoped<IDetalleFacturaService, DetalleFacturaService>();
+            services.AddScoped<IVentasService, VentasService>();
+            services.AddScoped<IBusquedaService, BusquedaService>();
+            services.AddScoped<ICheckoutService, CheckoutService>();
             services.AddBlazoredToast();
             //Conexion DB
             var SqlConnectionConfiguration = new SqlConnectionConfiguration(Configuration.GetConnectionString("SqlDBContext"));

@@ -18,18 +18,18 @@ using iText.Kernel.Geom;
 
 namespace GAMER_TECHNOLOGY.Data.PDF
 {
-    public class FacturaPDF : PageModel, IFacturaPDF
+    public class ReportePDF : PageModel, IReportePDF
     {
         private readonly IWebHostEnvironment _env;
 
-        public FacturaPDF(IWebHostEnvironment env)
+        public ReportePDF(IWebHostEnvironment env)
         {
             _env = env;
         }
 
-        public async Task GenerarFactura(IEnumerable<Checkout> checkout, IEnumerable<Detalle_venta> detalle)
+        public async Task GenerarReporte(IEnumerable<Venta> venta, IEnumerable<Detalle_venta> detalleVenta)
         {
-            string destination = "wwwroot/FilePdf/Factura.pdf";
+            string destination = "wwwroot/FilePdf/Reporte.pdf";
             FileInfo file = new FileInfo(destination);
             file.Delete();
             var fileStream = file.Create();
@@ -40,23 +40,17 @@ namespace GAMER_TECHNOLOGY.Data.PDF
             //Escribir el documento
             using (Document document = new Document(pdfdoc))
             {
-                foreach(var info in checkout)
-                {
-                    document.Add(new Paragraph("Nombre del Cliente:" + info.nombre  + " " + info.apellido));
-                    document.Add(new Paragraph("Email del Cliente:" + info.email_user));
-                    document.Add(new Paragraph("Direccion:" + info.direccion));
-                    document.Add(new Paragraph("Ciudad:" + info.ciudad));
-                    document.Add(new Paragraph(" "));
-                    document.Add(new Paragraph(" DETALLE DE LA FACTURA "));
+                document.Add(new Paragraph("Nombre de la Empresa:" + " " + "GAMERTECHNOLOGY"));
+                document.Add(new Paragraph("Email de la Empresa:" +" "+ "Gamertechnology@gmail.com"));
+                document.Add(new Paragraph(" "));
+                document.Add(new Paragraph("REPORTE DE PRODCUTOS MAS VENDIDOS"));
 
-                }
-
-                float[] columnWidths = new float[] { 70f, 200f, 70f, 70f };
+                float[] columnWidths = new float[] { 70f, 200f, 70f, 80f };
                 Table table = new Table(columnWidths);
                 Cell cell = new Cell(1, 1)
                   .SetBackgroundColor(ColorConstants.GRAY)
                   .SetTextAlignment(TextAlignment.CENTER)
-                  .Add(new Paragraph("Código:"));
+                  .Add(new Paragraph("Id Producto:"));
                 table.AddCell(cell);
                 cell = new Cell(1, 1)
                    .SetBackgroundColor(ColorConstants.GRAY)
@@ -66,7 +60,7 @@ namespace GAMER_TECHNOLOGY.Data.PDF
                 cell = new Cell(1, 1)
                    .SetBackgroundColor(ColorConstants.GRAY)
                    .SetTextAlignment(TextAlignment.CENTER)
-                   .Add(new Paragraph("Valor:"));
+                   .Add(new Paragraph("Precio Unit:"));
                 table.AddCell(cell);
                 cell = new Cell(1, 1)
                    .SetBackgroundColor(ColorConstants.GRAY)
@@ -75,36 +69,38 @@ namespace GAMER_TECHNOLOGY.Data.PDF
                 table.AddCell(cell);
                 document.Add(table);
 
-                foreach (var item in detalle)
+                foreach (var item in detalleVenta)
                 {
                     table = new Table(columnWidths);
-                    table.AddCell(item.id_venta.ToString());
-                    table.AddCell(item.nombre);
-                    table.AddCell(item.valor.ToString());
+                    table.AddCell(item.id_articulo.ToString());
+                    table.AddCell(item.nombre.ToString());
+                    table.AddCell(item.valor.ToString("0,# $"));
                     table.AddCell(item.cantidad.ToString());
                     document.Add(table);
                 }
-                float[] columnWidths2 = new float[] { 70f, 200f, 70f, 70f };
+
+                float[] columnWidths2 = new float[] { 70f, 200f, 70f, 80f };
                 Table table2 = new Table(columnWidths2);
                 Cell cell2 = new Cell(1, 3)
                  .SetBackgroundColor(ColorConstants.GRAY)
                  .SetTextAlignment(TextAlignment.CENTER)
                  .Add(new Paragraph("Valor Total:"));
                 table2.AddCell(cell2);
-                var total_venta = detalle.Select(x => x.valor * x.cantidad).Sum();
+                var total_venta = detalleVenta.Select(x => x.valor * x.cantidad).Sum();
                 table2.AddCell(total_venta.ToString("0,# $"));
                 document.Add(table2);
 
                 document.Close();
+
             }
             descargarPDF();
         }
 
         public FileResult descargarPDF()
         {
-            var filePath = System.IO.Path.Combine(_env.ContentRootPath, "wwwroot/FilePdf", "Factura.pdf");
+            var filePath = System.IO.Path.Combine(_env.ContentRootPath, "wwwroot/FilePdf", "Reporte.pdf");
             byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
-            return File(fileBytes, "wwwroot/FilePdf", "Factura.pdf");
+            return File(fileBytes, "wwwroot/FilePdf", "Reporte.pdf");
         }
     }
 }

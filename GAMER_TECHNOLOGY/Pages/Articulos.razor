@@ -2,6 +2,11 @@
 @using Data.Model
 @using Data.Service
 @using Microsoft.AspNetCore.Components;
+@using System.IO;
+@using GAMER_TECHNOLOGY.Data.FileUtils
+
+@inject IExcelService ExcelService
+@inject Microsoft.JSInterop.IJSRuntime JS
 
 @inject IArticuloService ArticuloService
 @inject NavigationManager NavigationManager
@@ -47,6 +52,10 @@
             </ul>
         </div>
     </nav>
+</div>
+
+<div>
+    <button @onclick="generarCSV">Descargar catalogo</button>
 </div>
 
 <div style="display:flex; justify-content:center;align-content:center">
@@ -96,7 +105,7 @@ else
 
 @code {
 
-
+    MemoryStream excelStream;
     private IEnumerable<Articulo> articulos;
 
     private string busqueda { get; set; }
@@ -123,5 +132,13 @@ else
         {
             articulos = await ArticuloService.GetAll();
         }
+    }
+
+    public async Task generarCSV()
+    {
+        articulos = await ArticuloService.GetAllS();
+        excelStream = ExcelService.CreateExcel(articulos);
+        await JS.SaveAs("Catalogo.xlsx", excelStream.ToArray());
+      
     }
 }

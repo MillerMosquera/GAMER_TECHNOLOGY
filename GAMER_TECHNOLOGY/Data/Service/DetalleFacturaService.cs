@@ -16,16 +16,29 @@ namespace GAMER_TECHNOLOGY.Data.Service
         {
             _configuration = configuration;
         }
-        public async Task<IEnumerable<DetalleFactura>> GetDetalleFactura(int id_articulo)
+        public async Task<IEnumerable<Detalle_venta>> GetDetalleFactura(int id_articulo)
         {
             
             using (var conn = new SqlConnection(_configuration.Value))
             {
-                const string query = @"SELECT p.numero_orden, r.id_articulo, r.nombre, r.precio, r.cantidad
-                                        FROM dbo.Resumen_compra r, dbo.pago p
-                                        WHERE r.Id_articulo=@id_articulo group by p.numero_orden,r.id_articulo,r.nombre,r.precio, r.cantidad";
-               var detalle = await conn.QueryAsync<DetalleFactura>(query, new { id_articulo = id_articulo }, commandType: CommandType.Text);
+                const string query = @"SELECT id_venta,nombre,valor,fecha,sum(cantidad) as cantidad
+                                        FROM dbo.detalleVenta
+                                        WHERE id_articulo = @id_articulo group by id_venta,nombre,valor,fecha";
+               var detalle = await conn.QueryAsync<Detalle_venta>(query, new { id_articulo = @id_articulo }, commandType: CommandType.Text);
                return detalle.ToList();
+            }
+
+        }
+        public async Task<IEnumerable<Checkout>> GetDetalleUser(string email_user)
+        {
+
+            using (var conn = new SqlConnection(_configuration.Value))
+            {
+                const string query = @"SELECT Email_user,Nombre,Apellido,Direccion,Ciudad
+                                        FROM dbo.Info_compra
+                                        WHERE Email_user = @email_user group by Email_user,Nombre,Apellido,Direccion,Ciudad";
+                var detalle = await conn.QueryAsync<Checkout>(query, new { Email_user = @email_user }, commandType: CommandType.Text);
+                return detalle.ToList();
             }
 
         }

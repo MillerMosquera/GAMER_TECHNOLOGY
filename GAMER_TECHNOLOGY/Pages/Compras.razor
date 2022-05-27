@@ -27,7 +27,7 @@
                 </a>
             </div>
         </div>
-        @if (resumens == null)
+        @if (detalle_Ventas == null)
         {
             <h4>No tiene productos</h4>
         }
@@ -38,7 +38,7 @@
                     <h1 style="font-size: 1.8rem;line-height: 24px;line-height: 2.4rem;font-family: Lato,sans-serif;font-weight: 300;padding: 30px 15px;">Mis órdenes</h1>
                 </div>
             </div>
-            subtotal = resumens.Sum(orden => orden.Cantidad * orden.Precio);
+            subtotal = detalle_Ventas.Sum(orden => orden.cantidad * orden.valor);
             descuento = subtotal / 100 * 2;
             total = subtotal - descuento;
             <div style="width:100%;min-height:60px; background-color:#fff;padding:0 15px;margin:15px 0 0; border-bottom:1px dashed #e0e0e0; overflow:auto;">
@@ -49,7 +49,7 @@
                     </div>
                 </div>
             </div>
-            foreach (var item in resumens)
+            foreach (var item in detalle_Ventas)
             {
                 <div class="row px-3" style="min-height: 200px;">
                     <div class="col-xl-12">
@@ -64,25 +64,24 @@
                                             <div style=" width: 100%;height: auto;display: inline-block;margin: 10px 0 0;">
                                                 <div style="width: 75px;height: auto;border: 1px solid #e0e0e0;box-sizing: initial;float: left;position: relative;">
                                                     <a>
-                                                        <img src="@item.Imagen" style="width:75px;height:75px"
-                                                     height="75" width="75" alt="Televisor Samsung 43 Pulgadas Smart"
-                                                     title="Televisor Samsung 43 Pulgadas Smart">
+                                                        <img src="" style="width:75px;height:75px"
+                                                     height="75" width="75">
                                                     </a>
                                                 </div>
                                                 <div style="width: calc(80% - 100px);height: auto;margin: 0 0 0 15px;float: left;text-align: left; ">
                                                     <div style="font-size: 1.2rem;line-height: 1rem;font-family: Lato,sans-serif;font-weight: 700;color: #888;text-transform: uppercase;">
-                                                        @item.Nombre
+                                                        @item.nombre
                                                     </div>
                                                     <div style="overflow:auto">
                                                         <span style="font-size:1rem;line-height: 18px;line-height: 1.8rem;font-weight: 400;color: #e4022d;">
-                                                            $@string.Format("{0:#,#}",item.Precio)
+                                                            $@string.Format("{0:#,#}",item.valor)
                                                         </span>
                                                         <span style="font-size: 0.7rem;line-height: 12px;line-height: 1.2rem;font-family: Lato,sans-serif;font-weight: 400;color: #888;display: block;">
                                                             *Precio de referencia
                                                         </span>
                                                     </div>
                                                     <span style="font-size: 0.6rem;line-height: 10px;line-height: 1rem;font-family: Lato,sans-serif;font-weight: 400;color: #888;display: block;margin-top: 5px;">
-                                                        @item.Cantidad unidad
+                                                        @item.cantidad unidad
                                                     </span>
                                                 </div>
                                                 <div style="overflow: hidden;">
@@ -90,18 +89,18 @@
                                                     <div>
                                                         <div style="overflow: hidden; float: right;">
                                                             <div>
-                                                                <a href="/factura/@item.Id_articulo" class="btn btn-secondary"
+                                                                <a href="/factura/@item.id_articulo" class="btn btn-secondary"
                                                            title="Encuentra tu factura a un click.">
                                                                     Consulta tu factura
                                                                 </a>
                                                             </div>
                                                             <div style="padding-top:20px">
-                                                                <a href="/evaluar/@item.Id_articulo" class="btn btn-secondary" title="Cuando recibas tu compra podrás evaluar tu producto.">
+                                                                <a href="/evaluar/@item.id_articulo" class="btn btn-secondary" title="Cuando recibas tu compra podrás evaluar tu producto.">
                                                                     Evalúa tu producto
                                                                 </a>
                                                             </div>
                                                             <div style="padding-top:20px">
-                                                                <a href="/devolucion/@item.Id_articulo" class="btn btn-secondary" title="Devolución de producto">
+                                                                <a href="/devolucion/@item.id_articulo" class="btn btn-secondary" title="Devolución de producto">
                                                                     Devolución
                                                                 </a>
                                                             </div>
@@ -122,8 +121,10 @@
 </div>
 
 @code {
-    ResumenPago resumen = new ResumenPago();
-    private IEnumerable<ResumenPago> resumens;
+    Carrito carrito = new Carrito();
+    private IEnumerable<Carrito> carritos;
+    private IEnumerable<Detalle_venta> detalle_Ventas;
+
     [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
 
     public double subtotal = 0;
@@ -142,7 +143,7 @@
                 if (SignInManager.IsSignedIn(user))
                 {
 
-                    resumens = await CompraService.GetEmail(email_user);
+                    detalle_Ventas = await CompraService.GetEmail(email_user);
 
                 }
             }

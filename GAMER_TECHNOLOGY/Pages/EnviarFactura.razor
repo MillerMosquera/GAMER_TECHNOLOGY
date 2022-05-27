@@ -1,4 +1,4 @@
-﻿@page "/factura/{Id_articulo:int}"
+﻿@page "/confirmar"
 
 @using MailKit;
 @using MimeKit;
@@ -17,12 +17,14 @@
 
 @inject IFacturaPDF FacturaPDF
 @inject IDetalleFacturaService DetalleFactura
+@inject NavigationManager NavigationManager
 
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
-@inject NavigationManager NavigationManager
 
 @inject ICompraService CompraService
+
+
 <div class="container cart my-5">
     <!-- Cart Table -->
     <div class="row">
@@ -63,11 +65,7 @@
                             <h2 class="wt-documents__list__item__title"
                                 style="font-family: Lato,sans-serif;font-weight: 300;font-size: 20px;font-size: 2rem;line-height: 24px;line-height: 2.4rem;margin-bottom: 20px;">
                                 Factura
-                            </h2><button type="button"
-                                         class="btn btn-primary" @onclick="descargar">
-                                Descargar
-                            </button>
-                            <span>o</span>
+                            </h2>
                             <button @onclick="enviar">Enviar al correo</button>
                         </div>
                     </div>
@@ -76,8 +74,8 @@
         </div>
     </div>
 </div>
-
 @code {
+
     [Parameter]
     public int Id_Articulo { get; set; }
 
@@ -88,37 +86,33 @@
     IEnumerable<Detalle_venta> detalleFactura;
     [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
 
-
-    protected override async Task OnInitializedAsync()
-    {
-        detalle_Ventas = await CompraService.GetId(Id_Articulo);
-    }
-
-    async Task descargar()
-    {
-        var user = (await authenticationStateTask).User;
-        var email_user = user.Identity.Name;
-
-        if (SignInManager.IsSignedIn(user))
-        {
-            checkout = await DetalleFactura.GetDetalleUser(email_user);
-            detalleFactura = await DetalleFactura.GetDetalleFactura(Id_Articulo);
-            await FacturaPDF.GenerarFactura(checkout, detalleFactura);
-
-        }
-
-    }
     async Task enviar()
     {
         var user = (await authenticationStateTask).User;
         var email_user = user.Identity.Name;
+
         if (SignInManager.IsSignedIn(user))
         {
-            //La genera
-            checkout = await DetalleFactura.GetDetalleUser(email_user);
-            detalleFactura = await DetalleFactura.GetDetalleFactura(Id_Articulo);
-            await FacturaPDF.GenerarFactura(checkout, detalleFactura);
-            NavigationManager.NavigateTo("/confirmar");
+            //La envia
+            MailMessage correo = new MailMessage();
+            correo.From = new MailAddress("jfelipeh92@gmail.com", "JUAN HERNANDEZ", System.Text.Encoding.UTF8);//Correo de salida
+            correo.To.Add(email_user); //Correo destino?
+            correo.Subject = "FACTURA"; //Asunto
+            correo.Body = "<b>Información detallada de su factura</b>"; //Mensaje del correo
+            correo.IsBodyHtml = true;
+            correo.Priority = MailPriority.Normal;
+            SmtpClient smtp = new SmtpClient();
+            smtp.UseDefaultCredentials = false;
+            smtp.Host = "smtp.gmail.com"; //Host del servidor de correo
+            smtp.Port = 25; //Puerto de salida
+            smtp.Credentials = new System.Net.NetworkCredential("jfelipeh92@gmail.com", "finder1992");//Cuenta de correo
+            ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
+            smtp.EnableSsl = true;//True si el servidor de correo permite ssl
+            correo.Attachments.Add(new Attachment("wwwroot/FilePdf/Factura.pdf"));
+            smtp.Send(correo);
+            NavigationManager.NavigateTo("/");
         }
+
     }
+
 }

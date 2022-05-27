@@ -6,6 +6,7 @@ namespace GAMER_TECHNOLOGY.Data.Service
 {
     public interface IDetalleFacturaService
     {
-        Task<IEnumerable<DetalleFactura>> GetDetalleFactura(int id);
+        Task<IEnumerable<Detalle_venta>> GetDetalleFactura(int id_articulo);
+        Task<IEnumerable<Checkout>> GetDetalleUser(string email_user);
     }
 }

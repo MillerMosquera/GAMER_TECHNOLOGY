@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace GAMER_TECHNOLOGY.Data.PDF
 {
-    public interface IFacturaPDF
+    public interface IReportePDF
     {
         FileResult descargarPDF();
-        Task GenerarFactura(IEnumerable<Checkout> checkout, IEnumerable<Detalle_venta> detalle);
+        Task GenerarReporte(IEnumerable<Venta> venta, IEnumerable<Detalle_venta> detalleVenta);
     }
 }

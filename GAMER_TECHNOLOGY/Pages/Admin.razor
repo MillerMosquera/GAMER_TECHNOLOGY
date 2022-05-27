@@ -7,37 +7,103 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [Authorize(Roles = "Admin")]
 
+@using Data.Model
+@using Data.Service
+@using Data.PDF
+
+@using Microsoft.AspNetCore.Components;
+@using Blazored.LocalStorage
+
+@inject IReportePDF ReportePDF
+@inject IDetalleReporteService DetalleReporte
+@inject ICheckoutService CheckoutService
+@inject IVentasService VentaService
+@inject IArticuloService ArticulosService
+
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
 
 <h3>Admin</h3>
+<div>
+    <h5>Generar reporte de productos más vendidos</h5>
+    <button @onclick="generar">Descargar</button>
+</div>
+
+
+@if (detalleReporte == null)
+{
+    
+}
+else
+{
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-lg-8 mb-4">
+                <h1>Carrito de compras</h1>
+                <form id="cart-update-form" method="post">
+                    <div class="table-responsive card">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Id Venta</th>
+                                    <th>Id Articulo</th>
+                                    <th>Nombre</th>
+                                    <th>Fecha</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                            @foreach (var item in detalleReporte)
+                            {
+
+                                <tbody>
+                                    <tr>
+                                        <td class="d-none d-sm-table-cell">
+                                            <h3 style="font-size:1em">@item.id_venta</h3>
+                                        </td>
+                                        <td class="product_info">
+                                            <h3 style="font-size:1em">@item.id_articulo</h3>
+                                        </td>
+                                        <td class="product_info">
+                                            <h3 style="font-size:1em">@item.nombre</h3>
+                                        </td>
+                                        <td class="product_info">
+                                            <h3 style="font-size:1em">@item.fecha</h3>
+                                        </td>
+                                        <td class="product_info">
+                                            <h3 style="font-size:1em">@item.valor</h3>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            }
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+}
 
 @code {
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
-    string ADMINISTRATION_ROLE = "Admin";
-    System.Security.Claims.ClaimsPrincipal CurrentUser;
 
-    protected override async Task OnInitializedAsync()
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    private DateTime desde { get; set; }
+    private DateTime hasta { get; set; }
+
+    IEnumerable<Venta> venta;
+    IEnumerable<Detalle_venta> detalleVenta;
+    IEnumerable<Detalle_venta> detalleReporte;
+    IEnumerable<Articulo> articulo;
+
+    public async Task generar()
     {
-        // ensure there is a ADMINISTRATION_ROLE
-        var RoleResult = await _RoleManager.FindByNameAsync(ADMINISTRATION_ROLE);
-        if (RoleResult == null)
-        {
-            // Create ADMINISTRATION_ROLE Role
-            await _RoleManager.CreateAsync(new IdentityRole(ADMINISTRATION_ROLE));
-        }
-        // Ensure a user named Admin@BlazorHelpWebsite.com is an Administrator
-        var user = await _UserManager.FindByNameAsync("Admin@gmail.com");
-        if (user != null)
-        {
-            // Is Admin@BlazorHelpWebsite.com in administrator role?
-            var UserResult = await _UserManager.IsInRoleAsync(user, ADMINISTRATION_ROLE);
-            if (!UserResult)
-            {
-                // Put admin in Administrator role
-                await _UserManager.AddToRoleAsync(user, ADMINISTRATION_ROLE);
-            }
-        }
-        // Get the current logged in user
-        CurrentUser = (await authenticationStateTask).User;
+        venta = await VentaService.GetAll();
+        detalleVenta = await DetalleReporte.GetDetalleReporte();
+        await ReportePDF.GenerarReporte(venta, detalleVenta);
     }
+    
 }

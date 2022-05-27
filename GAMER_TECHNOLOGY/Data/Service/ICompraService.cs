@@ -6,7 +6,7 @@ namespace GAMER_TECHNOLOGY.Data.Service
 {
     public interface ICompraService
     {
-        Task<IEnumerable<ResumenPago>> GetEmail(string email_user);
-        Task<ResumenPago> GetId(int Id_Articulo);
+        Task<IEnumerable<Detalle_venta>> GetEmail(string email_user);
+        Task<IEnumerable<Detalle_venta>> GetId(int Id_Articulo);
     }
 }
